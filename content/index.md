@@ -1,6 +1,7 @@
 +++
 title = "About Us"
 date = "08.09.2023"
+menu = "main"
 +++
 
 ### Herzlich Willkommen auf dem Schweizer FPV Hub
