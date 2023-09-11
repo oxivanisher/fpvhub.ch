@@ -1,0 +1,161 @@
+---
+title: "Betaflight 4.4.0"
+date: "2022-11-28"
+description: Betaflight 4.4.0 wurde soeben veroeffentlicht!
+---
+Wie immer kann die neue Version im Configurator oder auf der Releases-Seite auf Github heruntergeladen werden.
+
+## Features
+- Add OSD_CRAFTNAME_MSGS to insert additional data into CraftName by @howels in #11771
+- Ghost MSP support by @daleckystepan in #11242
+- ExpressLRS 3.0 compatibility mode by @phobos- in #11783
+- VTX Device over MSP by @phobos- in #11705
+- Feature/dshot extended telemetry on unused ranges by @damosvil in #11694
+- Set PID profile count and RATE profile count to 4 by @haslinghuis in #11770
+- Implement battery continuation by @rvdveen in #11084
+- Watt Hours Drawn OSD Element and Post Flight Stat by @jonmahoney15 in #11843
+- CLOUD_BUILD enablement. Supporting the use of a cloud build server. by @blckmn in #11850
+- Add AUX channel value to OSD (e.g. for Pilot's Heart Rate) by @alexeystn in #10789
+- Ready Mode by @jonmahoney15 in #11886
+- Add support for getting/setting elrs uid via msp API by @jeffpearce in #11192
+- Rename 'display_name' to 'pilot_name'; rename 'name' to 'craft_name' ;Add the 'MSP2_GET_TEXT' and 'MSP2_SET_TEXT' MSP commands by @krasiyan in #11391
+- Add HD OSD support by @SteveCEvans in #11964
+- MSP messages to get and set PID and rate profile names. by @qvasic in #12020
+- Show PID and rate profile names in OSD menu. by @qvasic in #11962
+- Improvements
+- Add angle limit to OSD settings menu by @SpencerGraffunder in #11257
+- Adds blackbox fields_disabled_mask to msp by @fgiudice98 in #10054
+- Remove unused rxRefreshRate by @daleckystepan in #11668
+- Update GPS Rescue by @ctzsnooze in #11579
+- Extract function toUpperCase for osd elements by @limonspb in #11670
+- Only write to FLASH once 64 bytes are buffered by @SteveCEvans in #11697
+- Save flash: Replace CLI params for OSD stats and warnings with bitmasks by @limonspb in #11671
+- Use timed timeouts for USB HAL functions, not simple counts, as per H7 by @SteveCEvans in #11669
+- Use macros for power with integer exponents by @mathiasvr in #11126
+- Style: Use angle brackets with standard library headers by @mathiasvr in #11196
+- Remove USE_EXTI, USE_GYRO_EXTI and USE_MPU_DATA_READY_SIGNAL defines by @SteveCEvans in #11585
+- MAX7456 cleanups 1 by @hydra in #11662
+- Refactoring IMU, ACC and small PID loop improvements by @daleckystepan in #11326
+- Move to Github Actions for PRs by @blckmn in #11723
+- Don't set sleepTime to ut_delay in BARO_STATE_PRESSURE_SAMPLE state by @SteveCEvans in #11740
+- CLI: Raise upper limit of dyn_idle_min_rpm by @KarateBrot in #11769
+- Allow dyn_notch_min_hz as low as 20Hz by @bw1129 in #11795
+- Refactor barometer as floats with pt2 smoothing by @ctzsnooze in #11775
+- Change Dynamic Notch Min Hz default to 100Hz by @SupaflyFPV in #11827
+- Unify all eRPM to RPM calculations into one single function by @damosvil in #11772
+- GPS Rescue smoothed with upsampled inputs, bug fixes by @ctzsnooze in #11834
+- Cleanup some switch-case-s by @DusKing1 in #11810
+- Add MSP displayport sub-command definitions by @SteveCEvans in #11864
+- Enhancements for ICM-426xx (gyro and acc) by @KarateBrot in #11866
+- Fix function brace style by @mathiasvr in #11191
+- ExpressLRS: Minor style fix and clean up by @mathiasvr in #11195
+- Use ARRAYLEN macro where applicable by @mathiasvr in #11190
+- Populate unified targets as separate target folders by @blckmn in #11885
+- Move TPA to PID profile by @haslinghuis in #11779
+- Use std abs() instead of ABS() macro by @mathiasvr in #11097
+- Use lrintf for explicit rounding of float to integer by @mathiasvr in #11102
+- Remove old style definitions by @KarateBrot in #11887
+- BMI160/270: Stronger acc anti-aliasing by @KarateBrot in #11895
+- Revert GPS satellite minimums to single gps_rescue_min_sats value by @ctzsnooze in #11905
+- Removing 'UNIFIED_TARGET' by @blckmn in #11909
+- Remove duplicate DSHOT port configuration by @SteveCEvans in #11915
+- Lock altitude task at 100Hz & fix baro calibration by @KarateBrot in #11911
+- use PWM_RANGE consistently by @ctzsnooze in #11921
+- Enable MSP Displayport on a serial port using FUNCTION_MSP_DISPLAYPORT by @SteveCEvans in #11913
+- Moving OSD to cloud build option by @blckmn in #11926
+- Final target clean up by @blckmn in #11925
+- Adding board scratch space. by @blckmn in #11920
+- Parse GPS DOP values by @KarateBrot in #11912
+- Dedicated task for GPS Rescue by @KarateBrot in #11972
+- Refactor RPM Filter by @KarateBrot in #11765
+- Add HD OSD system elements for VTX temp and goggle fan speed by @SteveCEvans in #11999
+- Fix/enhance NMEA & Ublox message polling for GPS by @KarateBrot in #12022
+- NMEA ATGM336 - support 10Hz refresh rate by @krzysztofkuczek in #12008
+- Display FLASH JEDEC ID in status and flash_info by @SteveCEvans in #12051
+- Extend error output by @haslinghuis in #12063
+- Cloud build option for 64 leds by @limonspb in #12064
+- Add support for Omron 2SMBP-02B barometer by @mluessi in #11173
+- Display OSD canvas size in status command by @SteveCEvans in #12108
+- Improved SDFT windowing by @KarateBrot in #12117
+- Disarm on fail-safe when allow arming without fix is enabled and failsafe procedure is set to GPS-RESCUE by @haslinghuis in #12120
+- Flash M25P16: Add QSPI support by @mluessi in #12103
+- Add osd_canvas_width/height variables by @SteveCEvans in #12164
+- Automatically apply HD settings if HD VTX is detected by @SteveCEvans in #12184
+
+## Fixes 
+- Fix compilation error when USE_RX_MSP_OVERRIDE is defined without USE_RX_MSP. by @hydra in #11661
+- IRC Ghost protocol improvements by @daleckystepan in #10801
+- Ghost jitter fix by @daleckystepan in #11234
+- Fixing segmentation fault of SITL. by @xuhao1 in #11302
+- Fix mcu types by @daleckystepan in #11716
+- Add support for BMI160 gyro for unified targets where TARGET_FLASH_SIZE > 512 by @SteveCEvans in #11707
+- Make sure to write dshot stop cmd to all other motors when targeting … by @RoarFPV in #11672
+- Fix debug mode D_LPF by @KarateBrot in #11721
+- Fix data overwriting in VCP_DataTx on F4 by @daleckystepan in #11713
+- Fix cli unit test on Clang 13 by @daleckystepan in #11184
+- Flashfs: Add support for asynchronous complete erase by @mluessi in #11719
+- Revert b6e2790 as this broke FrSky SPI by @SteveCEvans in #11750
+- Remove superfluous double ; by @SteveCEvans in #11761
+- Lower max CraftName length to avoid ugly truncation errors by @howels in #11801
+- Gps rescue - default to Ublox, fix landing phase criteria, fix level mode offsets by @ctzsnooze in #11756
+- Maintain previous MSP GPS Heading resolution by @ctzsnooze in #11814
+- MSC - Fix MSC on H7. by @hydra in #11804
+- Fix SD card initialisation by @SteveCEvans in #11839
+- Hide accel related modes if accel disabled by @mituritsyn in #11665
+- Negate CS at end of SPI accesses by @SteveCEvans in #11845
+- Fix for old telemetry sent to RPM filter during a re-arming sequence by @damosvil in #11847
+- Restore iTerm Windup to all axes, active by default by @ctzsnooze in #11806
+- Fix the normal airmode mixer by @Quick-Flash in #11857
+- Fixes for maxAlt and gpsTrust bugs by @ctzsnooze in #11841
+- Defer DSHOT telemetry calculations to avoid overload on F411 MCUs by @damosvil in #11851
+- Ensure that airmode off to on always has a smooth transition by @Quick-Flash in #11867
+- Fix MSP removed parameter comment by @klutvott123 in #11873
+- Fix CMS anti gravity gain by @klutvott123 in #11872
+- Make anti-windup affect the gain from Anti Gravity by @tbolin in #11878
+- Use SPI DMA for single segments if negateCS false on end marker by @SteveCEvans in #11883
+- ICM-426xx AAF bugfix & refactoring by @KarateBrot in #11880
+- Add def for AKK/RDQ SmartAudio bug by @howels in #11891
+- Fix read of DPS310 coef C11 by @SteveCEvans in #11898
+- Beeper READY_BEEP when home fix is first achieved by @ctzsnooze in #11896
+- Fix chaining of FLASH SPI transactions by @SteveCEvans in #11897
+- Fix osd_aux_channel range by @haslinghuis in #11902
+- Fixes for SITL - adding to the standard list of targets by @blckmn in #11910
+- Fix SITL build by @haslinghuis in #11917
+- Fix for OSD Aux Value channel selection by @haslinghuis in #11919
+- Set GPIOs to GPIO_SPEED_FREQ_LOW for timer based DSHOT by @SteveCEvans in #11916
+- Add case for MSP OSD device detection by @haslinghuis in #11931
+- Allow serial port to share all MSP functions at once by @SteveCEvans in #11950
+- Fix debug GPS_DOP by @KarateBrot in #11956
+- Enable Instruction and Data cache and prefetch on G4 by @SteveCEvans in #11973
+- Added RSNR to the OSD by @TonyBlit in #11062
+- Fix ATTITUDE task rate by @KarateBrot in #11975
+- Fix RPM Filter copy instructions by @KarateBrot in #11988
+- Fix compatibility for name field by @haslinghuis in #11980
+- Revert RPM Filter copy instructions to old method by @KarateBrot in #11994
+- Add missing gyro check by @ASDosjani in #12000
+- Fix msp API_VERSION_MINOR by @KarateBrot in #12001
+- Fix OSD_X macro to correctly load the high bit by @bri3d in #12038
+- Gps Rescue: Fix "velocityD" filtering by @KarateBrot in #12042
+- Use USE_DMA_SPEC without preconditions by @haslinghuis in #12050
+- Fix ELRS gating issues. by @hydra in #12055
+- Center logo and CMS display for HD OSD by @SteveCEvans in #12056
+- Small fix for msp vtx over crsf framing by @phobos- in #12059
+- Fixed edt telemetry initial value assignation by @damosvil in #12074
+- FIX: USE_RX_CC2500 was not gating correctly by @blckmn in #12083
+- Center ARMED message and stats by @SteveCEvans in #12086
+- FIX: MSP Displayport now has dependency on OSD config by @blckmn in #12106
+- FIX: CC2500 not building due to undefined pins. by @blckmn in #12125
+- FIX: SPI_DPS310 not gated correctly by @blckmn in #12131
+- Ensure OSD elements are on canvas by @SteveCEvans in #12144
+- Fix reset PG behaviour and configurator interactions based on USE_OSD_SD and USE_OSD_HD definitions by @SteveCEvans in #12152
+- Avoid debugging other data than RPM telemetry when decoding DSHOT RPM by @damosvil in #12166
+- Improve performance for ELRS SX1280 SPI callbacks and SPI/ELRS handlers. by @hydra in #11460
+- FIX: Hard fault on dump of settings if no OSD selected by @blckmn in #12171
+- Fixed getDshotAverageRpm function by @damosvil in #12178
+- Minor fixes for Dyn Notch & SDFT by @KarateBrot in #12199
+- GPS Rescue Bugfix, add a failsafe debug, refactor stick deflection by @ctzsnooze in #12195
+- Include MSP over telemetry for ghost by @klutvott123 in #12208
+- Fix DEBUG_ALTITUDE by @KarateBrot in #12213
+- Fix SITL by @haslinghuis in #12217
+- Fix SDFT batch process by @KarateBrot in #12218
+- fix SITL by @ykeuter in #12220

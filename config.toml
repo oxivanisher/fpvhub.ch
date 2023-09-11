@@ -2,37 +2,28 @@ baseURL = "https://fpvhub.ch"
 languageCode = "en-us"
 title = "fpvhub.ch"
 theme="archie"
-copyright = "© Athul"
+copyright = "© FPVHub"
 pygmentsstyle = "monokai"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
 [params]
 	mode="auto"
 	useCDN=false
-	subtitle = "Minimal and Clean [blog theme for Hugo](https://github.com/athul/archie)"
+	subtitle = "Swiss FPV Hub"
 
 [[params.social]]
 name = "GitHub"
 icon = "github"
-url = "https://github.com/athul/archie"
+url = "https://github.com/oxivanisher/fpvhub.ch"
 
-[[params.social]]
-name = "Twitter"
-icon = "twitter"
-url = "https://github.com/athulcajay/"
-
-[[params.social]]
-name = "GitLab"
-icon = "gitlab"
-url = "https://gitlab.com/athul/"
 [[menu.main]]
 name = "Home"
 url = "/"
 weight = 1
 
 [[menu.main]]
-name = "All posts"
-url = "/posts"
+name = "Chat"
+url = "/chat"
 weight = 2
 
 [[menu.main]]
@@ -41,6 +32,11 @@ url = "/about"
 weight = 3
 
 [[menu.main]]
-name = "Tags"
-url = "/tags"
+name = "All posts"
+url = "/posts"
 weight = 4
+
+#[[menu.main]]
+#name = "Tags"
+#url = "/tags"
+#weight = 4
