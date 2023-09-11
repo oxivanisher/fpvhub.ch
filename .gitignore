@@ -1,0 +1,8 @@
+# ide stuff
+.vscode
+# hugo server ignores
+public/
+.hugo_build.lock
+main.scss*
+tagcolor-template*
+resources/
