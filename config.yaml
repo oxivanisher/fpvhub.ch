@@ -1,0 +1,32 @@
+---
+baseURL: "https://fpvhub.ch"
+title: "fpvhub.ch"
+theme: "hugo-theme-monochrome"
+defaultContentLanguage: de
+languages:
+  de:
+    disabled: false
+    languageCode: "de"
+    languageName: "Deutsch"
+    contentDir: "content"
+    weight: 1
+
+params:
+  footer: "Copyright © 2023 by oxivanisher" 
+  author: "oxivanisher" 
+
+menu:
+  navbar:
+  - identifier: about
+    name: About
+    title: About
+    url: /about/
+    weight: 100
+  - identifier: news
+    name: News
+    url: /news/
+    weight: -100
+  - identifier: discord
+    name: Discord
+    url: /discord
+    weight: 80

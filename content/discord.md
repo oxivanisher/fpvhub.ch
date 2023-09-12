@@ -1,6 +1,11 @@
 ---
-title: "Discord FPV Hub | Der Schweizer FPV Chat"
+title: "Discord"
 date: "2023-09-11"
+author: "oxivanisher"
+description: "Discord FPV Hub | Der Schweizer FPV Chat"
+keywords:
+- chat
+- discord
 ---
 
 Um die Community der FPV-Piloten in der Schweiz näher zusammenzubringen, haben wir einen Discord Server names “FPV Hub” eingerichtet. Die Idee dahinter ist es, den sehr verstreuten WhatsApp-Gruppen etwas entgegenzuwirken. Damit auch neue Piloten einfacheren Zugang zur Community finden.
