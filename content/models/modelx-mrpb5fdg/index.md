@@ -18,10 +18,10 @@ files:
       layer_height: 0.2
       infill: 20
       supports: false
-status: approved
+status: deleted
 download_count: 0
 thumbnail: thumb.png
-draft: false
+draft: true
 ---
 
 Gutes Testes der
