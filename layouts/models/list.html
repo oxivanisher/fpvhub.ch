@@ -269,25 +269,40 @@ const canvases = document.querySelectorAll('.stl-thumb-canvas');
 function renderSTL(canvas) {
   const stlUrl = canvas.dataset.stl;
   if (!stlUrl) return;
+
+  // Get actual size from parent element
+  const parent = canvas.parentElement;
+  const w = parent.clientWidth || 300;
+  const h = parent.clientHeight || 300;
+  canvas.width = w;
+  canvas.height = h;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-  renderer.setSize(canvas.clientWidth || 300, canvas.clientHeight || 300);
+  renderer.setSize(w, h);
   renderer.setClearColor(0x161b35, 1);
+  renderer.setPixelRatio(window.devicePixelRatio);
+
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
-  scene.add(new THREE.AmbientLight(0xffffff, 1.2));
-  const d1 = new THREE.DirectionalLight(0xffffff, 2.0); d1.position.set(1,2,3); scene.add(d1);
+  const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 5000);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+  const d1 = new THREE.DirectionalLight(0xffffff, 2.5); d1.position.set(1,2,3); scene.add(d1);
   const d2 = new THREE.DirectionalLight(0xffffff, 1.5); d2.position.set(-2,1,-1); scene.add(d2);
   const d3 = new THREE.DirectionalLight(0xffffff, 1.0); d3.position.set(0,0,2); scene.add(d3);
+
   new STLLoader().load(stlUrl, (geo) => {
     geo.center();
-    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xf5c518, metalness: 0.0, roughness: 0.8 }));
+    const mat = new THREE.MeshPhongMaterial({ color: 0xf5c518, shininess: 30, specular: 0x222222 });
+    const mesh = new THREE.Mesh(geo, mat);
     mesh.rotation.x = -Math.PI / 2;
     scene.add(mesh);
     const size = new THREE.Box3().setFromObject(mesh).getSize(new THREE.Vector3()).length();
-    camera.position.set(size*0.7, size*0.5, size*0.7);
-    camera.lookAt(0,0,0);
+    camera.position.set(size * 0.7, size * 0.5, size * 0.7);
+    camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
-  }, undefined, ()=>{});
+  }, undefined, () => {});
 }
 
 const observer = new IntersectionObserver((entries) => {
