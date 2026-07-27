@@ -19,10 +19,10 @@ files:
       layer_height: 0.2
       infill: 20
       supports: false
-status: pending
+status: approved
 download_count: 0
 thumbnail: thumb.png
-draft: true
+draft: false
 ---
 
 Eine simple Mount für eine 19mm Kamera (im Bild ist eine Caddx Ratel 2). Der Durchmesser der Standoffs des Frames sollte Ø5mm sein und der Mittelpunktabstand der Standoffs beträgt 27mm. (ideal für den FalconRAD Li-Ion Frame)
