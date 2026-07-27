@@ -274,12 +274,13 @@ function renderSTL(canvas) {
   renderer.setClearColor(0x161b35, 1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
-  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-  const d1 = new THREE.DirectionalLight(0xffffff, 1.2); d1.position.set(1,2,3); scene.add(d1);
-  const d2 = new THREE.DirectionalLight(0xffffff, 0.6); d2.position.set(-2,1,-1); scene.add(d2);
+  scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+  const d1 = new THREE.DirectionalLight(0xffffff, 2.0); d1.position.set(1,2,3); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0xffffff, 1.5); d2.position.set(-2,1,-1); scene.add(d2);
+  const d3 = new THREE.DirectionalLight(0xffffff, 1.0); d3.position.set(0,0,2); scene.add(d3);
   new STLLoader().load(stlUrl, (geo) => {
     geo.center();
-    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xf5c518, metalness: 0.15, roughness: 0.55 }));
+    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xf5c518, metalness: 0.0, roughness: 0.8 }));
     mesh.rotation.x = -Math.PI / 2;
     scene.add(mesh);
     const size = new THREE.Box3().setFromObject(mesh).getSize(new THREE.Vector3()).length();
