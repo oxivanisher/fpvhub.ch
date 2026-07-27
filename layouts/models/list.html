@@ -252,4 +252,46 @@
   });
 })();
 </script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { STLLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/STLLoader.js';
+
+const canvases = document.querySelectorAll('.stl-thumb-canvas');
+
+function renderSTL(canvas) {
+  const stlUrl = canvas.dataset.stl;
+  if (!stlUrl) return;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setSize(canvas.clientWidth || 300, canvas.clientHeight || 300);
+  renderer.setClearColor(0x161b35, 1);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const d1 = new THREE.DirectionalLight(0xffffff, 1.2); d1.position.set(1,2,3); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0xffffff, 0.6); d2.position.set(-2,1,-1); scene.add(d2);
+  new STLLoader().load(stlUrl, (geo) => {
+    geo.center();
+    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xf5c518, metalness: 0.15, roughness: 0.55 }));
+    mesh.rotation.x = -Math.PI / 2;
+    scene.add(mesh);
+    const size = new THREE.Box3().setFromObject(mesh).getSize(new THREE.Vector3()).length();
+    camera.position.set(size*0.7, size*0.5, size*0.7);
+    camera.lookAt(0,0,0);
+    renderer.render(scene, camera);
+  }, undefined, ()=>{});
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ renderSTL(e.target); observer.unobserve(e.target); } });
+}, { rootMargin: '100px' });
+canvases.forEach(c => observer.observe(c));
+</script>
 {{ end }}
