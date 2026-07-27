@@ -20,10 +20,10 @@ files:
       layer_height: 0.2
       infill: 20
       supports: false
-status: pending
+status: approved
 download_count: 0
 thumbnail: ''
-draft: true
+draft: false
 ---
 
 Ein simpler Adapter, um den VTX einer dji O4 lite auf einem 30.5x30.5mm Stack zu platzieren.
