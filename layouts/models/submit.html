@@ -427,14 +427,14 @@
         <div class="form-group-title">Dateien</div>
 
         <div class="form-section">
-          <label for="model_file">Datei (.stl oder .3mf) *</label>
+          <label for="model_file">Dateien (.stl oder .3mf) * <span style="font-weight:300;color:var(--fd);">— mehrere möglich</span></label>
           <div id="current-model-file" class="hint" style="display:none; margin-bottom:0.5rem;">
             📎 Aktuelle Datei: <span id="current-model-filename" style="color:var(--g); font-weight:600;"></span> – nur hochladen wenn du sie ersetzen möchtest
           </div>
           <div class="file-input-row">
-            <input type="file" id="model_file" name="model_file" accept=".stl,.3mf">
+            <input type="file" id="model_file" name="model_file" accept=".stl,.3mf" multiple>
           </div>
-          <span class="field-error" id="err-model-file">Bitte eine .stl oder .3mf Datei hochladen.</span>
+          <span class="field-error" id="err-model-file">Bitte mindestens eine .stl oder .3mf Datei hochladen.</span>
           <p class="hint">Max. 50 MB.</p>
         </div>
 
@@ -714,8 +714,8 @@ function validateDescription() {
 
 function validateModelFile() {
   if (isEditMode) return true; // Im Edit-Modus optional
-  const file = document.getElementById('model_file').files[0];
-  const invalid = !file;
+  const files = document.getElementById('model_file').files;
+  const invalid = !files || files.length === 0;
   showError('err-model-file', invalid);
   return !invalid;
 }
@@ -778,7 +778,7 @@ document.getElementById('model-submit-form').addEventListener('submit', async fu
   const form = e.target;
   const frameSizes = form.querySelectorAll('input[name="frame_size"]:checked');
   const materials = form.querySelectorAll('input[name="material"]:checked');
-  const modelFile = document.getElementById('model_file').files[0];
+  const modelFile = document.getElementById('model_file').files[0]; // erstes File für Thumbnail-Generierung
 
   const formData = new FormData();
   formData.append('title', form.title.value);
@@ -792,7 +792,10 @@ document.getElementById('model-submit-form').addEventListener('submit', async fu
   formData.append('infill', form.infill.value);
   formData.append('supports', form.supports.checked ? 'true' : 'false');
   formData.append('rights_confirm', 'true');
-  if (modelFile) formData.append('model_file', modelFile);
+  const modelFiles = document.getElementById('model_file').files;
+  for (let i = 0; i < modelFiles.length; i++) {
+    formData.append('model_file', modelFiles[i]);
+  }
   const thumbFile = document.getElementById('thumbnail').files[0];
 
   if (thumbFile) {
