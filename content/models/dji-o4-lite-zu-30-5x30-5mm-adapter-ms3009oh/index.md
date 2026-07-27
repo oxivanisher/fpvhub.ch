@@ -15,11 +15,13 @@ material_recommendation:
   - PLA
 license: CC0-1.0
 files:
-  - filename: model.3mf
-    print_settings:
+  - filename: model.stl
+    print_settings: &ref_0
       layer_height: 0.2
       infill: 20
       supports: false
+  - filename: model.3mf
+    print_settings: *ref_0
 status: approved
 download_count: 0
 thumbnail: ''
