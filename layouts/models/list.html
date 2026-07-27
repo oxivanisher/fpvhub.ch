@@ -301,8 +301,10 @@ function renderSTL(canvas) {
     const size = new THREE.Box3().setFromObject(mesh).getSize(new THREE.Vector3()).length();
     camera.position.set(size * 0.7, size * 0.5, size * 0.7);
     camera.lookAt(0, 0, 0);
+    console.log("Rendering STL on canvas", canvas.dataset.stl, "size:", w, "x", h);
     renderer.render(scene, camera);
-  }, undefined, () => {});
+    console.log("Render done");
+  }, (xhr) => { console.log("STL loading:", Math.round(xhr.loaded/xhr.total*100) + "%"); }, (err) => { console.error("STL load error:", err); });
 }
 
 const observer = new IntersectionObserver((entries) => {
