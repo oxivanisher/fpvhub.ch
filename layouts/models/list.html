@@ -253,9 +253,18 @@
 })();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
-<script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js",
+    "three/examples/jsm/loaders/STLLoader": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/STLLoader.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+
 document.addEventListener('DOMContentLoaded', function() {
   const canvases = document.querySelectorAll('.stl-thumb-canvas');
 
@@ -263,18 +272,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const stlUrl = canvas.dataset.stl;
     if (!stlUrl) return;
 
-    const w = canvas.parentElement.clientWidth || 300;
-    const h = canvas.parentElement.clientHeight || 300;
+    const parent = canvas.parentElement;
+    const w = parent.offsetWidth || 300;
+    const h = parent.offsetHeight || 300;
     canvas.width = w;
     canvas.height = h;
 
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, preserveDrawingBuffer: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
     renderer.setSize(w, h);
     renderer.setClearColor(0x0f1326, 1);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 5000);
-
     scene.add(new THREE.AmbientLight(0xffffff, 2.0));
     const d1 = new THREE.DirectionalLight(0xffffff, 2.0);
     d1.position.set(1, 2, 3);
@@ -283,20 +291,19 @@ document.addEventListener('DOMContentLoaded', function() {
     d2.position.set(-1, -1, -1);
     scene.add(d2);
 
-    const loader = new THREE.STLLoader();
+    const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 5000);
+    const loader = new STLLoader();
+
     loader.load(stlUrl, function(geo) {
       geo.center();
       const mat = new THREE.MeshLambertMaterial({ color: 0xf5c518 });
       const mesh = new THREE.Mesh(geo, mat);
       mesh.rotation.x = -Math.PI / 2;
       scene.add(mesh);
-      const box = new THREE.Box3().setFromObject(mesh);
-      const size = box.getSize(new THREE.Vector3()).length();
+      const size = new THREE.Box3().setFromObject(mesh).getSize(new THREE.Vector3()).length();
       camera.position.set(size * 0.8, size * 0.6, size * 0.8);
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
-    }, undefined, function(err) {
-      console.error('STL error:', err);
     });
   }
 
