@@ -23,10 +23,10 @@ files:
       layer_height: 0.2
       infill: 20
       supports: false
-status: pending
+status: approved
 download_count: 0
 thumbnail: thumb.png
-draft: true
+draft: false
 ---
 
 Eine dji O4 Pro Kamera Halterung für den Rekon7 Frame. 
