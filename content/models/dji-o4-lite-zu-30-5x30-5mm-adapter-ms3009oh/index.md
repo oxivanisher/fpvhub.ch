@@ -1,6 +1,6 @@
 ---
 id: dji-o4-lite-zu-30-5x30-5mm-adapter-ms3009oh
-title: dji O4 lite zu 30.5x30.5mm Adapter
+title: Universal dji O4 lite zu 30.5x30.5mm Adapter
 author:
   discord_id: '840623301268471808'
   display_name: paul_fpv
@@ -15,17 +15,15 @@ material_recommendation:
   - PLA
 license: CC0-1.0
 files:
-  - filename: model.stl
-    print_settings: &ref_0
+  - filename: model.3mf
+    print_settings:
       layer_height: 0.2
       infill: 20
       supports: false
-  - filename: model.3mf
-    print_settings: *ref_0
-status: approved
+status: pending
 download_count: 0
-thumbnail: ''
-draft: false
+thumbnail: thumb.png
+draft: true
 ---
 
 Ein simpler Adapter, um den VTX einer dji O4 lite auf einem 30.5x30.5mm Stack zu platzieren.
