@@ -217,16 +217,16 @@ renderer.setClearColor(0x161b35, 1);
 container.innerHTML = '';
 container.appendChild(renderer.domElement);
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
-const light1 = new THREE.DirectionalLight(0xffffff, 1.2);
-light1.position.set(1, 2, 3);
+const light1 = new THREE.DirectionalLight(0xffffff, 1.5);
+light1.position.set(2, 3, 4);
 scene.add(light1);
-const light2 = new THREE.DirectionalLight(0xffffff, 0.8);
-light2.position.set(-2, 1, -1);
+const light2 = new THREE.DirectionalLight(0x8888ff, 0.5);
+light2.position.set(-2, -1, -2);
 scene.add(light2);
-const light3 = new THREE.DirectionalLight(0xffffff, 0.4);
-light3.position.set(0, -1, 0);
+const light3 = new THREE.DirectionalLight(0xffffff, 0.3);
+light3.position.set(0, -3, 0);
 scene.add(light3);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -237,16 +237,32 @@ loader.load(
   stlUrl,
   (geometry) => {
     geometry.center();
-    const material = new THREE.MeshStandardMaterial({ color: 0xf5c518, metalness: 0.15, roughness: 0.55 });
+    geometry.computeVertexNormals();
+
+    // Main gold mesh with phong shading for visible contours
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xf5c518,
+      shininess: 60,
+      specular: 0xffffff,
+    });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.rotation.x = -Math.PI / 2;
     scene.add(mesh);
+
+    // Black outline for edge/contour visibility
+    const edgeMat = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
+    const edgeMesh = new THREE.Mesh(geometry, edgeMat);
+    edgeMesh.rotation.x = -Math.PI / 2;
+    edgeMesh.scale.multiplyScalar(1.02);
+    scene.add(edgeMesh);
 
     const box = new THREE.Box3().setFromObject(mesh);
     const size = box.getSize(new THREE.Vector3()).length();
     camera.position.set(size * 0.8, size * 0.5, size * 0.8);
     controls.target.set(0, 0, 0);
     controls.update();
+    // Initial render so model is visible immediately
+    renderer.render(scene, camera);
   },
   undefined,
   (err) => {
@@ -255,15 +271,8 @@ loader.load(
   }
 );
 
-// Only render on demand — no continuous loop (stops flicker)
+// Render only on user interaction — prevents black flicker
 controls.addEventListener('change', () => renderer.render(scene, camera));
-controls.addEventListener('end', () => renderer.render(scene, camera));
-
-function animate() {
-  requestAnimationFrame(animate);
-  if (controls.update()) renderer.render(scene, camera);
-}
-animate();
 
 window.addEventListener('resize', () => {
   camera.aspect = container.clientWidth / container.clientHeight;
