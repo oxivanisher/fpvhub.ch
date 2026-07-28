@@ -255,10 +255,13 @@ loader.load(
   }
 );
 
+// Only render on demand — no continuous loop (stops flicker)
+controls.addEventListener('change', () => renderer.render(scene, camera));
+controls.addEventListener('end', () => renderer.render(scene, camera));
+
 function animate() {
   requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
+  if (controls.update()) renderer.render(scene, camera);
 }
 animate();
 

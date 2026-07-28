@@ -283,23 +283,41 @@ document.addEventListener('DOMContentLoaded', function() {
     renderer.setClearColor(0x0f1326, 1);
 
     const scene = new THREE.Scene();
-    scene.add(new THREE.AmbientLight(0xffffff, 2.0));
-    const d1 = new THREE.DirectionalLight(0xffffff, 2.0);
-    d1.position.set(1, 2, 3);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    const d1 = new THREE.DirectionalLight(0xffffff, 1.5);
+    d1.position.set(2, 3, 4);
     scene.add(d1);
-    const d2 = new THREE.DirectionalLight(0xffffff, 1.0);
-    d2.position.set(-1, -1, -1);
+    const d2 = new THREE.DirectionalLight(0x8888ff, 0.5);
+    d2.position.set(-2, -1, -2);
     scene.add(d2);
+    const d3 = new THREE.DirectionalLight(0xffffff, 0.3);
+    d3.position.set(0, -3, 0);
+    scene.add(d3);
 
     const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 5000);
     const loader = new STLLoader();
 
     loader.load(stlUrl, function(geo) {
       geo.center();
-      const mat = new THREE.MeshLambertMaterial({ color: 0xf5c518 });
+      geo.computeVertexNormals();
+
+      // Main gold mesh
+      const mat = new THREE.MeshPhongMaterial({
+        color: 0xf5c518,
+        shininess: 60,
+        specular: 0xffffff,
+      });
       const mesh = new THREE.Mesh(geo, mat);
       mesh.rotation.x = -Math.PI / 2;
       scene.add(mesh);
+
+      // Black outline for edge visibility
+      const edgeMat = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
+      const edgeMesh = new THREE.Mesh(geo, edgeMat);
+      edgeMesh.rotation.x = -Math.PI / 2;
+      edgeMesh.scale.multiplyScalar(1.03);
+      scene.add(edgeMesh);
+
       const size = new THREE.Box3().setFromObject(mesh).getSize(new THREE.Vector3()).length();
       camera.position.set(size * 0.8, size * 0.6, size * 0.8);
       camera.lookAt(0, 0, 0);
