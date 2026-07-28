@@ -21,7 +21,7 @@ files:
   - filename: model.3mf
     print_settings: *ref_0
 status: approved
-download_count: 0
+download_count: 1
 thumbnail: ''
 draft: false
 ---
