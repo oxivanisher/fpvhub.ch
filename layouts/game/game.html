@@ -436,10 +436,7 @@
     if (e.code === 'Enter') { e.preventDefault(); saveNameBtn.click(); }
   });
 
-  let scoreSubmitting = false;
   function submitScore(finalScoreValue, name, frames) {
-    if (scoreSubmitting) return;
-    scoreSubmitting = true;
     submitStatus.textContent = 'Score wird gespeichert...';
     const headers = { 'Content-Type': 'application/json' };
     const token = localStorage.getItem(DISCORD_TOKEN_KEY);
@@ -460,7 +457,6 @@
         if (data.top10) renderLeaderboard(data.top10);
         loadStats();
         loadMyRank();
-        scoreSubmitting = false;
 
         // Ab Top 10 (nicht nur Platz 1) nach Verknüpfung fragen, falls noch nicht verknüpft
         if (data.madeTop10 && !data.linked && data.scoreId) {
@@ -807,6 +803,7 @@
     nameCapture.classList.add('hidden');
     championClaim.classList.add('hidden');
     pendingScore = null;
+    gateTimer = 0;
     spawnGate();
   }
 
@@ -820,20 +817,26 @@
     handleScoreSubmission(score, frame);
   }
 
+  let gateTimer = 0;
+
   function update(delta = 1) {
     if (state !== 'playing') return;
-    frame++;
+    frame += delta;
 
-    if (invulnFrames > 0) invulnFrames--;
-    if (activeEffects.shrinkFrames > 0 && --activeEffects.shrinkFrames === 0) updateEffectsHud();
+    if (invulnFrames > 0) invulnFrames -= delta;
+    if (activeEffects.shrinkFrames > 0) {
+      activeEffects.shrinkFrames -= delta;
+      if (activeEffects.shrinkFrames <= 0) { activeEffects.shrinkFrames = 0; updateEffectsHud(); }
+    }
 
     const rNow = DRONE_R * (activeEffects.shrinkFrames > 0 ? 0.55 : 1);
 
-    drone.vy += GRAVITY;
-    drone.y += drone.vy;
+    drone.vy += GRAVITY * delta;
+    drone.y += drone.vy * delta;
     drone.rot = Math.max(-0.5, Math.min(1.1, drone.vy / 12));
 
-    if (frame % 2 === 0) {
+    // Trail every ~2 frames
+    if (Math.floor(frame) % 2 === 0 && Math.floor(frame - delta) % 2 !== 0) {
       droneTrail.push({ y: drone.y, rot: drone.rot });
       if (droneTrail.length > 5) droneTrail.shift();
     }
@@ -842,14 +845,19 @@
       if (handleCollision()) return;
     }
 
-    // Tempo steigt kontinuierlich mit der Spielzeit, nicht in Score-Sprüngen
+    // Speed increases with time — normalized to 60fps
     speed = Math.min(5.2, 2.6 + frame * 0.0028);
-    frame += delta - 1; // compensate for delta
 
-    if (frame % Math.max(58, Math.round(95 - score * 1.2)) === 0) spawnGate();
+    // Gate spawning via timer instead of frame modulo (works with delta time)
+    gateTimer += delta;
+    const gateInterval = Math.max(58, Math.round(95 - score * 1.2));
+    if (gateTimer >= gateInterval) {
+      gateTimer -= gateInterval;
+      spawnGate();
+    }
 
     for (const g of gates) {
-      g.x -= speed;
+      g.x -= speed * delta;
       if (g.moving) {
         g.gapY = clamp(
           g.baseGapY + Math.sin(frame * g.moveSpeed + g.movePhase) * g.moveAmp,
@@ -1261,21 +1269,14 @@
     drawDrone();
   }
 
-  let lastTime = 0;
-  const TARGET_FPS = 60;
-  const FRAME_TIME = 1000 / TARGET_FPS;
-
-  function loop(timestamp) {
-    const delta = Math.min((timestamp - lastTime) / FRAME_TIME, 3); // max 3x speedup cap
-    lastTime = timestamp;
-
+  function loop() {
     if (state === 'playing') {
       animT += delta;
       groundOffset += speed * delta;
     }
-    update(delta);
+    update();
     draw();
-    requestAnimationFrame((ts) => { lastTime = ts; requestAnimationFrame(loop); });
+    requestAnimationFrame(loop);
   }
 
   canvas.addEventListener('pointerdown', (e) => { e.preventDefault(); flap(); });
