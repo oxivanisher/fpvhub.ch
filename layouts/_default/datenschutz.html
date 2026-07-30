@@ -1,0 +1,70 @@
+{{ define "main" }}
+<style>
+  .legal-hero { padding: 4rem 0 2rem; }
+  .legal-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 0.5rem; -webkit-text-stroke: 0; }
+  .legal-hero p { font-size: 0.85rem; color: var(--fd); }
+  .legal-body { padding: 2rem 0 4rem; max-width: 68ch; }
+  .legal-body h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--g); margin: 2rem 0 0.75rem; -webkit-text-stroke: 0; }
+  .legal-body h2:first-child { margin-top: 0; }
+  .legal-body p { font-size: 0.92rem; line-height: 1.8; color: var(--fm); font-weight: 300; margin-bottom: 1rem; }
+  .legal-body a { color: var(--g); text-decoration: none; }
+  .legal-body a:hover { text-decoration: underline; }
+  .legal-body ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+  .legal-body ul li { font-size: 0.92rem; line-height: 1.8; color: var(--fm); font-weight: 300; }
+  .cookie-reset { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; color: var(--n3); background: var(--g); padding: 0.6rem 1.2rem; border-radius: 0.4rem; border: none; cursor: pointer; font-family: 'Space Grotesk', sans-serif; margin-top: 0.5rem; }
+  .cookie-reset:hover { background: var(--o); }
+</style>
+
+<div class="legal-hero">
+  <div style="font-size:0.67rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--o);margin-bottom:0.8rem;">Rechtliches</div>
+  <h1>Datenschutzerklärung</h1>
+  <p>Zuletzt aktualisiert: Juli 2026</p>
+</div>
+
+<div class="legal-body">
+
+  <h2>1. Verantwortliche Stelle</h2>
+  <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist das FPV Hub Team. Kontakt über unseren <a href="https://discord.gg/pFyZEdx4vQ" target="_blank" rel="noopener">Discord-Server</a>.</p>
+
+  <h2>2. Welche Daten wir sammeln</h2>
+  <p>Wir sammeln nur dann Daten, wenn du dem zugestimmt hast. Mit deiner Zustimmung nutzen wir <strong>Google Analytics 4</strong> um zu verstehen, wie Besucher unsere Website nutzen. Dabei werden folgende Daten erhoben:</p>
+  <ul>
+    <li>Aufgerufene Seiten und Verweildauer</li>
+    <li>Ungefährer geografischer Standort (Land/Region)</li>
+    <li>Verwendetes Gerät, Browser und Betriebssystem</li>
+    <li>Anonymisierte IP-Adresse</li>
+    <li>Herkunft des Besuchs (z.B. direkter Aufruf, Discord-Link)</li>
+  </ul>
+  <p>Wenn du dich mit Discord anmeldest (z.B. für FPV Parts), speichern wir deine Discord-ID, deinen Anzeigenamen und dein Profilbild.</p>
+
+  <h2>3. Google Analytics</h2>
+  <p>Wir nutzen Google Analytics 4 von Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA. Die IP-Adresse wird anonymisiert, bevor sie an Google übermittelt wird. Weitere Informationen findest du in der <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzerklärung von Google</a>.</p>
+  <p>Google Analytics wird nur geladen wenn du zugestimmt hast. Du kannst deine Einwilligung jederzeit widerrufen:</p>
+  <button class="cookie-reset" onclick="resetCookieConsent()">Cookie-Einstellungen zurücksetzen</button>
+
+  <h2>4. Cookies</h2>
+  <p>Wir verwenden folgende Cookies:</p>
+  <ul>
+    <li><strong>fpvhub_cookie_consent</strong> — speichert deine Cookie-Einstellung (kein Ablaufdatum)</li>
+    <li><strong>fpvhub_auth</strong> — speichert deine Discord-Session falls du eingeloggt bist (Session-Cookie)</li>
+    <li><strong>Google Analytics Cookies</strong> (_ga, _ga_*) — nur mit deiner Zustimmung, Laufzeit bis 2 Jahre</li>
+  </ul>
+
+  <h2>5. Deine Rechte (DSG / DSGVO)</h2>
+  <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten. Kontaktiere uns dafür auf Discord.</p>
+
+  <h2>6. Hosting</h2>
+  <p>Diese Website wird über <strong>GitHub Pages</strong> gehostet (GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA). GitHub speichert beim Aufruf der Website Server-Logs. Weitere Informationen in der <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener">GitHub Datenschutzerklärung</a>.</p>
+
+  <h2>7. Änderungen</h2>
+  <p>Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen. Die aktuelle Version ist immer auf dieser Seite verfügbar.</p>
+
+</div>
+
+<script>
+function resetCookieConsent() {
+  localStorage.removeItem('fpvhub_cookie_consent');
+  alert('Cookie-Einstellungen zurückgesetzt. Beim nächsten Seitenaufruf erscheint der Banner wieder.');
+}
+</script>
+{{ end }}
