@@ -814,7 +814,7 @@
     finalBest.textContent = best;
     bestLabel.textContent = best;
     overOverlay.classList.remove('hidden');
-    handleScoreSubmission(score, frame);
+    handleScoreSubmission(score, Math.floor(frame));
   }
 
   let gateTimer = 0;
