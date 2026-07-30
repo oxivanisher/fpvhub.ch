@@ -71,7 +71,7 @@
 <canvas id="bg-canvas"></canvas>
 
 <!-- Cookie Banner -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:99999;background:var(--n1);border-top:1px solid var(--bdrh);padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:99999;background:var(--n1);border-top:1px solid var(--bdrh);padding:1.25rem 2rem;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
   <div style="font-size:0.85rem;color:var(--fm);line-height:1.6;max-width:600px;">
     🍪 Wir nutzen Google Analytics um zu verstehen wie Besucher unsere Website nutzen.
     <a href="/datenschutz" style="color:var(--g);text-decoration:none;">Datenschutzerklärung</a>
@@ -86,7 +86,8 @@
 (function() {
   var consent = localStorage.getItem('fpvhub_cookie_consent');
   if (!consent) {
-    document.getElementById('cookie-banner').style.display = 'flex';
+    var banner = document.getElementById('cookie-banner');
+    banner.style.display = 'flex';
   }
 })();
 
