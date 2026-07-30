@@ -2,6 +2,19 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<script>
+// Cookie-Banner Logik — sofort im <head> ausführen
+window.__cookieConsent = localStorage.getItem('fpvhub_cookie_consent');
+document.addEventListener('DOMContentLoaded', function() {
+  var banner = document.getElementById('cookie-banner');
+  if (!banner) return;
+  if (!window.__cookieConsent) {
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+});
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ .Site.Title }}{{ if not .IsHome }} | {{ .Title }}{{ end }}</title>
 <meta name="description" content="Die zentrale FPV-Community der Region.">
@@ -71,7 +84,7 @@
 <canvas id="bg-canvas"></canvas>
 
 <!-- Cookie Banner -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:99999;background:var(--n1);border-top:1px solid var(--bdrh);padding:1.25rem 2rem;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
+<div id="cookie-banner" style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:var(--n1);border-top:1px solid var(--bdrh);padding:1.25rem 2rem;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;display:none;">
   <div style="font-size:0.85rem;color:var(--fm);line-height:1.6;max-width:600px;">
     🍪 Wir nutzen Google Analytics um zu verstehen wie Besucher unsere Website nutzen.
     <a href="/datenschutz" style="color:var(--g);text-decoration:none;">Datenschutzerklärung</a>
@@ -83,14 +96,6 @@
 </div>
 
 <script>
-(function() {
-  var consent = localStorage.getItem('fpvhub_cookie_consent');
-  if (!consent) {
-    var banner = document.getElementById('cookie-banner');
-    banner.style.display = 'flex';
-  }
-})();
-
 function cookieAccept() {
   localStorage.setItem('fpvhub_cookie_consent', 'accepted');
   document.getElementById('cookie-banner').style.display = 'none';
