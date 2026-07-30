@@ -3,17 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <script>
-// Cookie-Banner Logik — sofort im <head> ausführen
-window.__cookieConsent = localStorage.getItem('fpvhub_cookie_consent');
-document.addEventListener('DOMContentLoaded', function() {
-  var banner = document.getElementById('cookie-banner');
-  if (!banner) return;
-  if (!window.__cookieConsent) {
-    banner.style.display = 'flex';
-  } else {
-    banner.style.display = 'none';
-  }
-});
+// Sofort: CSS-Klasse setzen bevor DOM gerendert wird
+if (localStorage.getItem('fpvhub_cookie_consent')) {
+  document.write('<style>#cookie-banner{display:none!important}</style>');
+}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ .Site.Title }}{{ if not .IsHome }} | {{ .Title }}{{ end }}</title>
