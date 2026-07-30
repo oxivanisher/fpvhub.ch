@@ -18,10 +18,10 @@ files:
       layer_height: 0.2
       infill: 100
       supports: true
-status: pending
+status: approved
 download_count: 0
 thumbnail: thumb.png
-draft: true
+draft: false
 ---
 
 Für die meisten Race-Frames geeignet. Hält RX und VTX auf dem Stack fest
