@@ -18,10 +18,10 @@ files:
       layer_height: 0.2
       infill: 100
       supports: true
-status: pending
+status: approved
 download_count: 0
 thumbnail: thumb.jpg
-draft: true
+draft: false
 ---
 
 Mount für 18mm GPS für den Evoque Frame
