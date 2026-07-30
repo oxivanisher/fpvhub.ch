@@ -427,14 +427,14 @@
         <div class="form-group-title">Dateien</div>
 
         <div class="form-section">
-          <label for="model_file">Dateien (.stl oder .3mf) * <span style="font-weight:300;color:var(--fd);">— mehrere möglich</span></label>
+          <label for="model_file">Dateien (.stl oder .3mf) * <span style="font-weight:300;color:var(--fd)">— mehrere möglich, .3mf wird automatisch zu .stl konvertiert</span></label>
           <div id="current-model-file" class="hint" style="display:none; margin-bottom:0.5rem;">
             📎 Aktuelle Datei: <span id="current-model-filename" style="color:var(--g); font-weight:600;"></span> – nur hochladen wenn du sie ersetzen möchtest
           </div>
           <div class="file-input-row">
             <input type="file" id="model_file" name="model_file" accept=".stl,.3mf" multiple>
           </div>
-          <span class="field-error" id="err-model-file">Bitte mindestens eine .stl oder .3mf Datei hochladen.</span>
+          <span class="field-error" id="err-model-file">Bitte eine .stl oder .3mf Datei hochladen.</span>
           <p class="hint">Max. 50 MB.</p>
         </div>
 
@@ -713,7 +713,7 @@ function validateDescription() {
 }
 
 function validateModelFile() {
-  if (isEditMode) return true; // Im Edit-Modus optional
+  if (isEditMode) return true;
   const files = document.getElementById('model_file').files;
   const invalid = !files || files.length === 0;
   showError('err-model-file', invalid);
@@ -732,7 +732,7 @@ function checkAllValid() {
     document.querySelectorAll('input[name="material"]:checked').length > 0 &&
     document.querySelectorAll('input[name="license"]:checked').length > 0 &&
     document.getElementById('description').value.trim().length >= 10 &&
-    (isEditMode || document.getElementById('model_file').files[0]) &&
+    (isEditMode || document.getElementById('model_file').files.length > 0) &&
     document.getElementById('rights_confirm').checked;
   submitBtn.disabled = !valid;
 }
@@ -778,7 +778,73 @@ document.getElementById('model-submit-form').addEventListener('submit', async fu
   const form = e.target;
   const frameSizes = form.querySelectorAll('input[name="frame_size"]:checked');
   const materials = form.querySelectorAll('input[name="material"]:checked');
-  const modelFile = document.getElementById('model_file').files[0]; // erstes File für Thumbnail-Generierung
+  const rawFiles = Array.from(document.getElementById('model_file').files);
+
+  // Convert all 3mf files to stl before upload
+  async function convert3mfToStl(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await loadZip(arrayBuffer);
+    const modelEntry = Object.values(zip.files).find(f => f.name.endsWith('.model'));
+    if (!modelEntry) throw new Error('Kein .model in 3MF');
+    const xml = await modelEntry.async('text');
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, 'text/xml');
+    const vertices = [];
+    const triangles = [];
+    doc.querySelectorAll('vertex').forEach(v => {
+      vertices.push([parseFloat(v.getAttribute('x')), parseFloat(v.getAttribute('y')), parseFloat(v.getAttribute('z'))]);
+    });
+    doc.querySelectorAll('triangle').forEach(t => {
+      triangles.push([parseInt(t.getAttribute('v1')), parseInt(t.getAttribute('v2')), parseInt(t.getAttribute('v3'))]);
+    });
+    const buf = new ArrayBuffer(84 + triangles.length * 50);
+    const view = new DataView(buf);
+    view.setUint32(80, triangles.length, true);
+    for (let i = 0; i < triangles.length; i++) {
+      const off = 84 + i * 50;
+      const [i0, i1, i2] = triangles[i];
+      view.setFloat32(off, 0, true); view.setFloat32(off+4, 0, true); view.setFloat32(off+8, 0, true);
+      view.setFloat32(off+12, vertices[i0][0], true); view.setFloat32(off+16, vertices[i0][1], true); view.setFloat32(off+20, vertices[i0][2], true);
+      view.setFloat32(off+24, vertices[i1][0], true); view.setFloat32(off+28, vertices[i1][1], true); view.setFloat32(off+32, vertices[i1][2], true);
+      view.setFloat32(off+36, vertices[i2][0], true); view.setFloat32(off+40, vertices[i2][1], true); view.setFloat32(off+44, vertices[i2][2], true);
+      view.setUint16(off+48, 0, true);
+    }
+    const stlName = file.name.replace(/\.3mf$/i, '.stl');
+    return new File([buf], stlName, { type: 'application/octet-stream' });
+  }
+
+  async function loadZip(buffer) {
+    if (typeof JSZip === 'undefined') {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    return await JSZip.loadAsync(buffer);
+  }
+
+  // Process all files: convert 3mf → stl
+  statusEl.textContent = 'Dateien werden verarbeitet…';
+  const processedFiles = [];
+  for (const file of rawFiles) {
+    if (file.name.toLowerCase().endsWith('.3mf')) {
+      try {
+        const stlFile = await convert3mfToStl(file);
+        processedFiles.push(stlFile);
+      } catch(e) {
+        statusEl.textContent = 'Fehler beim Konvertieren von ' + file.name + ': ' + e.message;
+        statusEl.style.color = 'red';
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+        return;
+      }
+    } else {
+      processedFiles.push(file);
+    }
+  }
+  statusEl.textContent = '';
 
   const formData = new FormData();
   formData.append('title', form.title.value);
@@ -792,10 +858,7 @@ document.getElementById('model-submit-form').addEventListener('submit', async fu
   formData.append('infill', form.infill.value);
   formData.append('supports', form.supports.checked ? 'true' : 'false');
   formData.append('rights_confirm', 'true');
-  const modelFiles = document.getElementById('model_file').files;
-  for (let i = 0; i < modelFiles.length; i++) {
-    formData.append('model_file', modelFiles[i]);
-  }
+  processedFiles.forEach(f => formData.append('model_file', f));
   const thumbFile = document.getElementById('thumbnail').files[0];
 
   if (thumbFile) {
