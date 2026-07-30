@@ -21,10 +21,10 @@ files:
       layer_height: 0.2
       infill: 100
       supports: false
-status: pending
+status: approved
 download_count: 0
 thumbnail: thumb.png
-draft: true
+draft: false
 ---
 
 Korrekte Ausrichtung für AIO auf Cinelog25
