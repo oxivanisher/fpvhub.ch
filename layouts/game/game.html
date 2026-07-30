@@ -847,6 +847,7 @@
 
     // Speed increases with time — normalized to 60fps
     speed = Math.min(5.2, 2.6 + frame * 0.0028);
+    groundOffset += speed * delta;
 
     // Gate spawning via timer instead of frame modulo (works with delta time)
     gateTimer += delta;
@@ -1269,12 +1270,20 @@
     drawDrone();
   }
 
-  function loop() {
+  let lastTime = 0;
+  const TARGET_FPS = 60;
+
+  function loop(timestamp) {
+    if (lastTime === 0) lastTime = timestamp;
+    const elapsed = timestamp - lastTime;
+    lastTime = timestamp;
+    // Normalize to 60fps, cap at 2.5x to avoid huge jumps after tab switch
+    const delta = Math.min(elapsed / (1000 / TARGET_FPS), 2.5);
+
     if (state === 'playing') {
       animT += delta;
-      groundOffset += speed * delta;
     }
-    update();
+    update(delta);
     draw();
     requestAnimationFrame(loop);
   }
