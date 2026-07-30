@@ -436,7 +436,10 @@
     if (e.code === 'Enter') { e.preventDefault(); saveNameBtn.click(); }
   });
 
+  let scoreSubmitting = false;
   function submitScore(finalScoreValue, name, frames) {
+    if (scoreSubmitting) return;
+    scoreSubmitting = true;
     submitStatus.textContent = 'Score wird gespeichert...';
     const headers = { 'Content-Type': 'application/json' };
     const token = localStorage.getItem(DISCORD_TOKEN_KEY);
@@ -457,6 +460,7 @@
         if (data.top10) renderLeaderboard(data.top10);
         loadStats();
         loadMyRank();
+        scoreSubmitting = false;
 
         // Ab Top 10 (nicht nur Platz 1) nach Verknüpfung fragen, falls noch nicht verknüpft
         if (data.madeTop10 && !data.linked && data.scoreId) {
@@ -816,7 +820,7 @@
     handleScoreSubmission(score, frame);
   }
 
-  function update() {
+  function update(delta = 1) {
     if (state !== 'playing') return;
     frame++;
 
@@ -840,6 +844,7 @@
 
     // Tempo steigt kontinuierlich mit der Spielzeit, nicht in Score-Sprüngen
     speed = Math.min(5.2, 2.6 + frame * 0.0028);
+    frame += delta - 1; // compensate for delta
 
     if (frame % Math.max(58, Math.round(95 - score * 1.2)) === 0) spawnGate();
 
@@ -1256,14 +1261,21 @@
     drawDrone();
   }
 
-  function loop() {
+  let lastTime = 0;
+  const TARGET_FPS = 60;
+  const FRAME_TIME = 1000 / TARGET_FPS;
+
+  function loop(timestamp) {
+    const delta = Math.min((timestamp - lastTime) / FRAME_TIME, 3); // max 3x speedup cap
+    lastTime = timestamp;
+
     if (state === 'playing') {
-      animT++;
-      groundOffset += speed;
+      animT += delta;
+      groundOffset += speed * delta;
     }
-    update();
+    update(delta);
     draw();
-    requestAnimationFrame(loop);
+    requestAnimationFrame((ts) => { lastTime = ts; requestAnimationFrame(loop); });
   }
 
   canvas.addEventListener('pointerdown', (e) => { e.preventDefault(); flap(); });
