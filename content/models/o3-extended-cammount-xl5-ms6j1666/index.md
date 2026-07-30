@@ -19,10 +19,10 @@ files:
       layer_height: 0.2
       infill: 20
       supports: true
-status: pending
+status: approved
 download_count: 0
 thumbnail: thumb.jpg
-draft: true
+draft: false
 ---
 
 Extended Cammount der O3 für den iFlight XL5 V5 Frame
