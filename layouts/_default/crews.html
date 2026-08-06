@@ -1,0 +1,352 @@
+{{ define "styles" }}
+<style>
+  .page-hero { padding: 4rem 0 3rem; }
+  .eyebrow { font-size: 0.67rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--o); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem; }
+  .eyebrow::after { content:''; flex:1; height:1px; background:var(--bdr); }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.0; letter-spacing: -0.01em; margin-bottom: 1rem; -webkit-text-stroke: 0; }
+  h1 span { color: var(--g); }
+  .page-sub { font-size: 1rem; line-height: 1.75; color: var(--fm); font-weight: 300; max-width: 55ch; }
+
+  /* Map */
+  .map-section { padding: 2.5rem 0; }
+  .map-wrap { background: var(--n1); border: 1px solid var(--bdr); border-radius: 1rem; overflow: hidden; position: relative; height: 380px; }
+  #crew-map { width: 100%; height: 100%; }
+  .map-legend { position: absolute; bottom: 1rem; left: 1rem; background: rgba(14,18,36,0.92); border: 1px solid var(--bdr); border-radius: 0.5rem; padding: 0.6rem 0.9rem; font-size: 0.72rem; color: var(--fm); display: flex; flex-direction: column; gap: 0.35rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Crews Grid */
+  .crews-section { padding: 2.5rem 0; border-top: 1px solid var(--bdr); }
+  .crews-section h2 { font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 800; margin-bottom: 0.5rem; -webkit-text-stroke: 0; }
+  .crews-sub { font-size: 0.9rem; color: var(--fm); font-weight: 300; margin-bottom: 2rem; }
+
+  .country-section { margin-bottom: 2.5rem; }
+  .country-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fd); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .country-label::after { content:''; flex:1; height:1px; background:var(--bdr); }
+
+  .crews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .crew-card { background: var(--n1); border: 1px solid var(--bdr); border-radius: 0.85rem; padding: 1.4rem; transition: border-color 0.15s, transform 0.15s; cursor: pointer; }
+  .crew-card:hover { border-color: var(--bdrh); transform: translateY(-2px); }
+  .crew-card.active { border-color: var(--g); }
+
+  .crew-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; }
+  .crew-flag { font-size: 1.4rem; line-height: 1; }
+  .crew-name { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--fg); -webkit-text-stroke: 0; }
+  .crew-region { font-size: 0.72rem; color: var(--fm); font-weight: 300; }
+
+  .crew-stats { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .crew-stat { text-align: center; }
+  .crew-stat-val { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--g); line-height: 1; }
+  .crew-stat-lbl { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fd); margin-top: 0.15rem; }
+
+  .crew-join-btn { display: block; width: 100%; text-align: center; font-size: 0.78rem; font-weight: 600; color: var(--n3); background: var(--g); border: none; border-radius: 0.4rem; padding: 0.55rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: background 0.15s; }
+  .crew-join-btn:hover { background: var(--o); }
+  .crew-join-btn.discord { background: #5865F2; color: white; }
+  .crew-join-btn.discord:hover { background: #4752c4; }
+
+  .crew-coming { opacity: 0.45; cursor: default; }
+  .crew-coming:hover { transform: none; border-color: var(--bdr); }
+  .crew-coming-badge { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fd); border: 1px solid var(--bdr); border-radius: 2rem; padding: 0.25rem 0.65rem; display: inline-block; margin-top: 0.25rem; }
+
+  /* Join Form */
+  .join-section { padding: 2.5rem 0; border-top: 1px solid var(--bdr); }
+  .join-section h2 { font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 800; margin-bottom: 0.5rem; -webkit-text-stroke: 0; }
+  .join-sub { font-size: 0.9rem; color: var(--fm); font-weight: 300; margin-bottom: 2rem; }
+
+  .join-form { background: var(--n1); border: 1px solid var(--bdrh); border-radius: 1rem; padding: 2rem; max-width: 560px; }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fm); margin-bottom: 0.5rem; }
+  .form-input, .form-select { width: 100%; background: var(--n2); border: 1px solid var(--bdrh); border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.9rem; font-family: 'Space Grotesk', sans-serif; color: var(--fg); outline: none; transition: border-color 0.15s; }
+  .form-input::placeholder { color: var(--fd); }
+  .form-input:focus, .form-select:focus { border-color: var(--g); }
+  .form-select option { background: var(--n2); }
+  .form-submit { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 700; color: var(--n3); background: var(--g); border: none; border-radius: 0.5rem; padding: 0.8rem 1.8rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: background 0.15s; }
+  .form-submit:hover { background: var(--o); }
+  .form-success { display: none; background: rgba(245,197,24,0.07); border: 1px solid var(--bdrh); border-radius: 0.75rem; padding: 1.2rem 1.5rem; color: var(--g); font-size: 0.9rem; font-weight: 500; margin-top: 1rem; }
+  .form-success.show { display: block; }
+
+  @media (max-width: 640px) { .crews-grid { grid-template-columns: 1fr; } .map-wrap { height: 260px; } }
+  @media (max-width: 900px) { .crews-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+{{ end }}
+
+{{ define "main" }}
+<div class="page-hero">
+  <div class="eyebrow">Community</div>
+  <h1>FPV Hub <span>Local Crews</span></h1>
+  <p class="page-sub">Finde FPV-Piloten in deiner Region und flieg gemeinsam. Local Crews sind kleine, lokale Gruppen die sich regelmässig zum Fliegen treffen.</p>
+</div>
+
+<!-- Map -->
+<div class="map-section">
+  <div class="map-wrap">
+    <div id="crew-map"></div>
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#23d18b"></div> Aktive Crew</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#747f8d"></div> Coming Soon</div>
+    </div>
+  </div>
+</div>
+
+<!-- Crews -->
+<div class="crews-section">
+  <h2>Alle Crews</h2>
+  <p class="crews-sub">Klick auf eine Crew um mehr zu erfahren oder tritt direkt bei.</p>
+
+  <!-- Schweiz -->
+  <div class="country-section">
+    <div class="country-label">🇨🇭 Schweiz</div>
+    <div class="crews-grid">
+      <div class="crew-card active">
+        <div class="crew-header">
+          <span class="crew-flag">🇨🇭</span>
+          <div>
+            <div class="crew-name">Solothurn Crew</div>
+            <div class="crew-region">Solothurn & Umgebung</div>
+          </div>
+        </div>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" id="crew-so-count">1</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <a href="https://discord.gg/pFyZEdx4vQ" class="crew-join-btn discord" target="_blank" rel="noopener">Auf Discord beitreten →</a>
+      </div>
+
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇨🇭</span>
+          <div>
+            <div class="crew-name">Zürich Crew</div>
+            <div class="crew-region">Zürich & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇨🇭</span>
+          <div>
+            <div class="crew-name">Bern Crew</div>
+            <div class="crew-region">Bern & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇨🇭</span>
+          <div>
+            <div class="crew-name">Basel Crew</div>
+            <div class="crew-region">Basel & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇨🇭</span>
+          <div>
+            <div class="crew-name">Luzern Crew</div>
+            <div class="crew-region">Luzern & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇨🇭</span>
+          <div>
+            <div class="crew-name">St. Gallen Crew</div>
+            <div class="crew-region">St. Gallen & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deutschland -->
+  <div class="country-section">
+    <div class="country-label">🇩🇪 Deutschland</div>
+    <div class="crews-grid">
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇩🇪</span>
+          <div>
+            <div class="crew-name">Baden-Württemberg Crew</div>
+            <div class="crew-region">Freiburg, Stuttgart & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇩🇪</span>
+          <div>
+            <div class="crew-name">Bayern Crew</div>
+            <div class="crew-region">München, Augsburg & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Österreich -->
+  <div class="country-section">
+    <div class="country-label">🇦🇹 Österreich</div>
+    <div class="crews-grid">
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇦🇹</span>
+          <div>
+            <div class="crew-name">Vorarlberg Crew</div>
+            <div class="crew-region">Vorarlberg & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+      <div class="crew-card crew-coming">
+        <div class="crew-header">
+          <span class="crew-flag">🇦🇹</span>
+          <div>
+            <div class="crew-name">Wien Crew</div>
+            <div class="crew-region">Wien & Umgebung</div>
+          </div>
+        </div>
+        <span class="crew-coming-badge">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Join Form -->
+<div class="join-section">
+  <h2>Crew beantragen</h2>
+  <p class="join-sub">Deine Region ist noch nicht dabei? Trag dich ein — wenn genug Piloten aus deiner Region dabei sind, starten wir eine neue Crew.</p>
+
+  <div class="join-form">
+    <div class="form-group">
+      <label class="form-label" for="crew-name-input">Dein Name</label>
+      <input type="text" id="crew-name-input" class="form-input" placeholder="z.B. Max Mustermann">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="crew-discord-input">Discord-Username *</label>
+      <input type="text" id="crew-discord-input" class="form-input" placeholder="z.B. sven.1337">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="crew-region-input">Deine Region</label>
+      <input type="text" id="crew-region-input" class="form-input" placeholder="z.B. Luzern, Schweiz">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="crew-select">Bestehende Crew beitreten (optional)</label>
+      <select id="crew-select" class="form-select">
+        <option value="">— Neue Region vorschlagen —</option>
+        <option value="solothurn">🇨🇭 Solothurn Crew</option>
+        <option value="zuerich">🇨🇭 Zürich Crew (Coming Soon)</option>
+        <option value="bern">🇨🇭 Bern Crew (Coming Soon)</option>
+        <option value="basel">🇨🇭 Basel Crew (Coming Soon)</option>
+        <option value="luzern">🇨🇭 Luzern Crew (Coming Soon)</option>
+        <option value="stgallen">🇨🇭 St. Gallen Crew (Coming Soon)</option>
+        <option value="bawue">🇩🇪 Baden-Württemberg Crew (Coming Soon)</option>
+        <option value="bayern">🇩🇪 Bayern Crew (Coming Soon)</option>
+        <option value="vorarlberg">🇦🇹 Vorarlberg Crew (Coming Soon)</option>
+        <option value="wien">🇦🇹 Wien Crew (Coming Soon)</option>
+      </select>
+    </div>
+    <button class="form-submit" onclick="submitCrewForm()">Eintragen →</button>
+    <div class="form-success" id="crew-form-success">
+      ✓ Danke! Wir melden uns auf Discord sobald deine Crew startet.
+    </div>
+  </div>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+// Simple Leaflet map
+(function() {
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(link);
+
+  var script = document.createElement('script');
+  script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  script.onload = function() {
+    var map = L.map('crew-map', { zoomControl: true, scrollWheelZoom: false }).setView([47.4, 9.5], 6);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap © CARTO',
+      maxZoom: 12
+    }).addTo(map);
+
+    function marker(lat, lng, name, active) {
+      var color = active ? '#23d18b' : '#747f8d';
+      var icon = L.divIcon({
+        html: '<div style="width:14px;height:14px;border-radius:50%;background:' + color + ';border:2px solid ' + (active ? '#fff' : '#444') + ';box-shadow:0 0 8px ' + color + '"></div>',
+        className: '',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+      });
+      L.marker([lat, lng], { icon: icon }).addTo(map)
+        .bindPopup('<strong style="color:#f5c518">' + name + '</strong>' + (active ? '<br><span style="color:#23d18b;font-size:0.8em">● Aktiv</span>' : '<br><span style="color:#747f8d;font-size:0.8em">Coming Soon</span>'));
+    }
+
+    // Schweiz
+    marker(47.207, 7.538, '🇨🇭 Solothurn Crew', true);
+    marker(47.376, 8.541, '🇨🇭 Zürich Crew', false);
+    marker(46.947, 7.445, '🇨🇭 Bern Crew', false);
+    marker(47.558, 7.588, '🇨🇭 Basel Crew', false);
+    marker(47.050, 8.309, '🇨🇭 Luzern Crew', false);
+    marker(47.422, 9.376, '🇨🇭 St. Gallen Crew', false);
+    // Deutschland
+    marker(48.775, 9.182, '🇩🇪 Baden-Württemberg Crew', false);
+    marker(48.137, 11.575, '🇩🇪 Bayern Crew', false);
+    // Österreich
+    marker(47.503, 9.747, '🇦🇹 Vorarlberg Crew', false);
+    marker(48.208, 16.373, '🇦🇹 Wien Crew', false);
+  };
+  document.head.appendChild(script);
+})();
+
+// Form submission
+function submitCrewForm() {
+  var name = document.getElementById('crew-name-input').value.trim();
+  var discord = document.getElementById('crew-discord-input').value.trim();
+  var region = document.getElementById('crew-region-input').value.trim();
+  var crew = document.getElementById('crew-select').value;
+
+  if (!name || !discord || !region) { alert('Bitte alle Felder ausfüllen.'); return; }
+
+  var btn = document.querySelector('.join-form .form-submit');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet...';
+
+  fetch('https://fpvhub-bot-production.up.railway.app/api/crews/apply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, discordUsername: discord, region, crew })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) {
+      document.getElementById('crew-form-success').classList.add('show');
+      btn.textContent = 'Gesendet ✓';
+    } else {
+      alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
+      btn.disabled = false;
+      btn.textContent = 'Eintragen →';
+    }
+  })
+  .catch(function() {
+    alert('Verbindungsfehler. Bitte versuche es später nochmal.');
+    btn.disabled = false;
+    btn.textContent = 'Eintragen →';
+  });
+}
+</script>
+{{ end }}
