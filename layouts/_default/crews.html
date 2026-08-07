@@ -106,7 +106,7 @@
           </div>
         </div>
         <div class="crew-stats">
-          <div class="crew-stat"><div class="crew-stat-val" id="crew-so-count">1</div><div class="crew-stat-lbl">Piloten</div></div>
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="REPLACE_WITH_SOLOTHURN_ROLE_ID">…</div><div class="crew-stat-lbl">Piloten</div></div>
         </div>
         <a href="https://discord.gg/pFyZEdx4vQ" class="crew-join-btn discord" target="_blank" rel="noopener">Auf Discord beitreten →</a>
       </div>
@@ -267,6 +267,29 @@
 
 {{ define "scripts" }}
 <script>
+// Piloten-Anzahl pro Crew aus Discord-Rollen laden
+(function() {
+  var statEls = document.querySelectorAll('.crew-stat-val[data-role-id]');
+  if (!statEls.length) return;
+
+  fetch('https://fpvhub-bot-production.up.railway.app/api/crews/counts')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      // Erwartetes Format: { "ROLE_ID": 12, "ANDERE_ROLE_ID": 5, ... }
+      statEls.forEach(function(el) {
+        var roleId = el.getAttribute('data-role-id');
+        if (data && typeof data[roleId] === 'number') {
+          el.textContent = data[roleId];
+        } else {
+          el.textContent = '–';
+        }
+      });
+    })
+    .catch(function() {
+      statEls.forEach(function(el) { el.textContent = '–'; });
+    });
+})();
+
 // Simple Leaflet map
 (function() {
   var link = document.createElement('link');
