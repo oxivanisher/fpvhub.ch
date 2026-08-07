@@ -270,39 +270,30 @@
 
 <!-- Join Form -->
 <div class="join-section">
-  <h2>Crew beantragen</h2>
-  <p class="join-sub">Deine Region ist noch nicht dabei? Trag dich ein — wenn genug Piloten aus deiner Region dabei sind, starten wir eine neue Crew.</p>
+  <h2>Neue Region vorschlagen</h2>
+  <p class="join-sub">Deine Region ist noch nicht dabei? Trag dich ein, wenn genug Piloten aus deiner Region dabei sind, starten wir eine neue Crew.</p>
 
   <div class="join-form">
-    <div class="form-group">
-      <label class="form-label" for="crew-name-input">Dein Name</label>
-      <input type="text" id="crew-name-input" class="form-input" placeholder="z.B. Max Mustermann">
+    <div id="bottom-form-discord-logged-in" class="discord-status" style="display:none;">
+      <img id="bottom-form-discord-avatar" src="" alt="">
+      <span>Angemeldet als <strong id="bottom-form-discord-name"></strong></span>
     </div>
+    <button type="button" id="bottom-form-discord-login-btn" class="discord-login-btn" onclick="startDiscordLogin()" style="display:none; margin-bottom: 1.25rem;">
+      Mit Discord einloggen
+    </button>
     <div class="form-group">
-      <label class="form-label" for="crew-discord-input">Discord-Username *</label>
-      <input type="text" id="crew-discord-input" class="form-input" placeholder="z.B. sven.1337">
+      <label class="form-label" for="crew-country-select">Land</label>
+      <select id="crew-country-select" class="form-select">
+        <option value="CH">🇨🇭 Schweiz</option>
+        <option value="DE">🇩🇪 Deutschland</option>
+        <option value="AT">🇦🇹 Österreich</option>
+      </select>
     </div>
     <div class="form-group">
       <label class="form-label" for="crew-region-input">Deine Region</label>
-      <input type="text" id="crew-region-input" class="form-input" placeholder="z.B. Luzern, Schweiz">
+      <input type="text" id="crew-region-input" class="form-input" placeholder="z.B. Luzern">
     </div>
-    <div class="form-group">
-      <label class="form-label" for="crew-select">Bestehende Crew beitreten (optional)</label>
-      <select id="crew-select" class="form-select">
-        <option value="">— Neue Region vorschlagen —</option>
-        <option value="solothurn">🇨🇭 Solothurn Crew</option>
-        <option value="zuerich">🇨🇭 Zürich Crew</option>
-        <option value="bern">🇨🇭 Bern Crew</option>
-        <option value="basel">🇨🇭 Basel Crew</option>
-        <option value="luzern">🇨🇭 Luzern Crew</option>
-        <option value="stgallen">🇨🇭 St. Gallen Crew</option>
-        <option value="bawue">🇩🇪 Baden-Württemberg Crew</option>
-        <option value="bayern">🇩🇪 Bayern Crew</option>
-        <option value="vorarlberg">🇦🇹 Vorarlberg Crew</option>
-        <option value="wien">🇦🇹 Wien Crew</option>
-      </select>
-    </div>
-    <button class="form-submit" onclick="submitCrewForm()">Eintragen →</button>
+    <button class="form-submit" id="crew-form-submit-btn" onclick="submitCrewForm()" disabled>Eintragen →</button>
     <div class="form-success" id="crew-form-success">
       ✓ Danke! Wir melden uns auf Discord sobald deine Crew startet.
     </div>
@@ -336,7 +327,7 @@
         <label class="form-label" for="apply-message-input">Kurze Nachricht (optional)</label>
         <input type="text" id="apply-message-input" class="form-input" placeholder="z.B. Fliege seit 2 Jahren, wohne in Solothurn">
       </div>
-      <button class="form-submit" id="apply-submit-btn" onclick="submitCrewApply()">Bewerbung senden →</button>
+      <button class="form-submit" id="apply-submit-btn" onclick="submitCrewApply()" disabled>Bewerbung senden →</button>
       <div class="apply-form-error" id="apply-form-error"></div>
     </div>
 
@@ -416,8 +407,11 @@ function getStoredToken() {
 }
 
 function startDiscordLogin() {
-  var crewId = document.getElementById('apply-crew-select').value;
-  if (crewId) sessionStorage.setItem('fpvhub_pending_crew_apply', crewId);
+  var overlayOpen = document.getElementById('apply-overlay').classList.contains('show');
+  if (overlayOpen) {
+    var crewId = document.getElementById('apply-crew-select').value;
+    if (crewId) sessionStorage.setItem('fpvhub_pending_crew_apply', crewId);
+  }
   window.location.href = BOT_URL + '/auth/discord?state=crews';
 }
 
@@ -443,21 +437,29 @@ function checkDiscordLogin(onDone) {
 }
 
 function updateLoginUI() {
-  var statusEl = document.getElementById('discord-logged-in');
-  var loginBtn = document.getElementById('discord-login-btn');
-  var submitBtn = document.getElementById('apply-submit-btn');
+  var widgets = [
+    { status: 'discord-logged-in', login: 'discord-login-btn', name: 'discord-status-name', avatar: 'discord-status-avatar', submit: 'apply-submit-btn' },
+    { status: 'bottom-form-discord-logged-in', login: 'bottom-form-discord-login-btn', name: 'bottom-form-discord-name', avatar: 'bottom-form-discord-avatar', submit: 'crew-form-submit-btn' }
+  ];
 
-  if (discordUser) {
-    statusEl.style.display = 'flex';
-    loginBtn.style.display = 'none';
-    document.getElementById('discord-status-name').textContent = discordUser.display_name;
-    document.getElementById('discord-status-avatar').src = discordUser.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png';
-    submitBtn.disabled = false;
-  } else {
-    statusEl.style.display = 'none';
-    loginBtn.style.display = 'flex';
-    submitBtn.disabled = true;
-  }
+  widgets.forEach(function(w) {
+    var statusEl = document.getElementById(w.status);
+    var loginBtn = document.getElementById(w.login);
+    var submitBtn = document.getElementById(w.submit);
+    if (!statusEl || !loginBtn) return;
+
+    if (discordUser) {
+      statusEl.style.display = 'flex';
+      loginBtn.style.display = 'none';
+      document.getElementById(w.name).textContent = discordUser.display_name;
+      document.getElementById(w.avatar).src = discordUser.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png';
+      if (submitBtn) submitBtn.disabled = false;
+    } else {
+      statusEl.style.display = 'none';
+      loginBtn.style.display = 'flex';
+      if (submitBtn) submitBtn.disabled = true;
+    }
+  });
 }
 
 // Beim Laden: Token aus Redirect übernehmen (falls gerade von Discord zurückgekommen)
@@ -597,21 +599,23 @@ function submitCrewApply() {
 
 // Form submission
 function submitCrewForm() {
-  var name = document.getElementById('crew-name-input').value.trim();
-  var discord = document.getElementById('crew-discord-input').value.trim();
   var region = document.getElementById('crew-region-input').value.trim();
-  var crew = document.getElementById('crew-select').value;
+  var country = document.getElementById('crew-country-select').value;
 
-  if (!name || !discord || !region) { alert('Bitte alle Felder ausfüllen.'); return; }
+  if (!discordUser) { alert('Bitte zuerst mit Discord einloggen.'); return; }
+  if (!region) { alert('Bitte deine Region angeben.'); return; }
 
-  var btn = document.querySelector('.join-form .form-submit');
+  var btn = document.getElementById('crew-form-submit-btn');
   btn.disabled = true;
   btn.textContent = 'Wird gesendet...';
 
-  fetch('https://fpvhub-bot-production.up.railway.app/api/crews/apply', {
+  fetch(BOT_URL + '/api/crews/apply', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, discordUsername: discord, region, crew })
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getStoredToken()
+    },
+    body: JSON.stringify({ region: region, country: country })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
