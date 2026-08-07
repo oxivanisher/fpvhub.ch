@@ -79,6 +79,12 @@
   .apply-modal-sub { font-size: 0.85rem; color: var(--fm); font-weight: 300; margin-bottom: 1.5rem; }
   .apply-form-error { display: none; background: rgba(226,75,74,0.08); border: 1px solid #E24B4A; border-radius: 0.5rem; padding: 0.7rem 1rem; color: #F09595; font-size: 0.82rem; margin-top: 1rem; }
   .apply-form-error.show { display: block; }
+  .discord-login-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; background: #5865F2; color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; transition: background 0.15s; }
+  .discord-login-btn:hover { background: #4752c4; }
+  .discord-status { display: flex; align-items: center; gap: 0.6rem; background: var(--n2); border: 1px solid var(--bdrh); border-radius: 0.5rem; padding: 0.65rem 1rem; margin-bottom: 1.25rem; }
+  .discord-status img { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; }
+  .discord-status span { font-size: 0.85rem; color: var(--fg); }
+  .discord-status span strong { color: var(--g); }
 </style>
 {{ end }}
 
@@ -317,10 +323,15 @@
         <label class="form-label" for="apply-crew-select">Crew</label>
         <select id="apply-crew-select" class="form-select" onchange="onApplyCrewChange()"></select>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="apply-discord-input">Discord-Username *</label>
-        <input type="text" id="apply-discord-input" class="form-input" placeholder="z.B. sven.1337">
+
+      <div id="discord-logged-in" class="discord-status" style="display:none;">
+        <img id="discord-status-avatar" src="" alt="">
+        <span>Angemeldet als <strong id="discord-status-name"></strong></span>
       </div>
+      <button type="button" id="discord-login-btn" class="discord-login-btn" onclick="startDiscordLogin()" style="display:none; margin-bottom: 1.25rem;">
+        Mit Discord einloggen
+      </button>
+
       <div class="form-group">
         <label class="form-label" for="apply-message-input">Kurze Nachricht (optional)</label>
         <input type="text" id="apply-message-input" class="form-input" placeholder="z.B. Fliege seit 2 Jahren, wohne in Solothurn">
@@ -396,17 +407,90 @@ function onApplyCrewChange() {
   document.getElementById('apply-modal-sub').textContent = 'Kurze Bewerbung für die ' + crew.name + ', die Crew-Mods schauen sie sich an und bestätigen dich auf Discord.';
 }
 
+// --- Discord Login (nutzt den bestehenden OAuth-Flow des Bots) ---
+var BOT_URL = 'https://fpvhub-bot-production.up.railway.app';
+var discordUser = null; // { discord_id, display_name, avatar_url } wenn eingeloggt
+
+function getStoredToken() {
+  return localStorage.getItem('fpvhub_auth_token');
+}
+
+function startDiscordLogin() {
+  var crewId = document.getElementById('apply-crew-select').value;
+  if (crewId) sessionStorage.setItem('fpvhub_pending_crew_apply', crewId);
+  window.location.href = BOT_URL + '/auth/discord?state=crews';
+}
+
+function checkDiscordLogin(onDone) {
+  var token = getStoredToken();
+  if (!token) { updateLoginUI(); if (onDone) onDone(); return; }
+
+  fetch(BOT_URL + '/auth/me', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.loggedIn) {
+      discordUser = data.user;
+    } else {
+      localStorage.removeItem('fpvhub_auth_token');
+      discordUser = null;
+    }
+    updateLoginUI();
+    if (onDone) onDone();
+  })
+  .catch(function() { updateLoginUI(); if (onDone) onDone(); });
+}
+
+function updateLoginUI() {
+  var statusEl = document.getElementById('discord-logged-in');
+  var loginBtn = document.getElementById('discord-login-btn');
+  var submitBtn = document.getElementById('apply-submit-btn');
+
+  if (discordUser) {
+    statusEl.style.display = 'flex';
+    loginBtn.style.display = 'none';
+    document.getElementById('discord-status-name').textContent = discordUser.display_name;
+    document.getElementById('discord-status-avatar').src = discordUser.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png';
+    submitBtn.disabled = false;
+  } else {
+    statusEl.style.display = 'none';
+    loginBtn.style.display = 'flex';
+    submitBtn.disabled = true;
+  }
+}
+
+// Beim Laden: Token aus Redirect übernehmen (falls gerade von Discord zurückgekommen)
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var tokenFromUrl = params.get('token');
+  if (tokenFromUrl) {
+    localStorage.setItem('fpvhub_auth_token', tokenFromUrl);
+    params.delete('token');
+    var newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState({}, '', newUrl);
+  }
+  checkDiscordLogin(function() {
+    // Kam man gerade von einem Login zurück? Modal direkt wieder öffnen,
+    // damit man nicht nochmal auf die Crew-Karte klicken muss.
+    var pendingCrew = sessionStorage.getItem('fpvhub_pending_crew_apply');
+    if (pendingCrew) {
+      sessionStorage.removeItem('fpvhub_pending_crew_apply');
+      openCrewApplyModal(pendingCrew);
+    }
+  });
+})();
+
 function openCrewApplyModal(crewId) {
   populateApplyCrewSelect();
   document.getElementById('apply-crew-select').value = crewId;
   onApplyCrewChange();
-  document.getElementById('apply-discord-input').value = '';
   document.getElementById('apply-message-input').value = '';
   document.getElementById('apply-form-error').classList.remove('show');
   document.getElementById('apply-form-fields').style.display = 'block';
   document.getElementById('apply-form-success').classList.remove('show');
+  updateLoginUI();
   var btn = document.getElementById('apply-submit-btn');
-  btn.disabled = false;
   btn.textContent = 'Bewerbung senden →';
   document.getElementById('apply-overlay').classList.add('show');
 }
@@ -416,13 +500,12 @@ function closeCrewApplyModal() {
 }
 
 function submitCrewApply() {
-  var discord = document.getElementById('apply-discord-input').value.trim();
   var message = document.getElementById('apply-message-input').value.trim();
   var errorEl = document.getElementById('apply-form-error');
   errorEl.classList.remove('show');
 
-  if (!discord) {
-    errorEl.textContent = 'Bitte deinen Discord-Username angeben.';
+  if (!discordUser) {
+    errorEl.textContent = 'Bitte zuerst mit Discord einloggen.';
     errorEl.classList.add('show');
     return;
   }
@@ -434,14 +517,15 @@ function submitCrewApply() {
   btn.disabled = true;
   btn.textContent = 'Wird gesendet...';
 
-  fetch('https://fpvhub-bot-production.up.railway.app/api/crews/apply', {
+  fetch(BOT_URL + '/api/crews/apply', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getStoredToken()
+    },
     body: JSON.stringify({
-      name: discord,
       region: crewInfo ? crewInfo.region : '',
       crew: crewId,
-      discordUsername: discord,
       message: message
     })
   })
