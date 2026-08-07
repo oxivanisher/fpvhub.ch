@@ -67,6 +67,18 @@
 
   @media (max-width: 640px) { .crews-grid { grid-template-columns: 1fr; } .map-wrap { height: 260px; } }
   @media (max-width: 900px) { .crews-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  /* Apply Modal */
+  .apply-overlay { display: none; position: fixed; inset: 0; background: rgba(6,8,18,0.75); z-index: 100; align-items: center; justify-content: center; padding: 1.5rem; }
+  .apply-overlay.show { display: flex; }
+  .apply-modal { background: var(--n1); border: 1px solid var(--bdrh); border-radius: 1rem; padding: 2rem; max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; }
+  .apply-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.4rem; }
+  .apply-modal h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; -webkit-text-stroke: 0; }
+  .apply-modal-close { background: none; border: none; color: var(--fm); font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 0.2rem; }
+  .apply-modal-close:hover { color: var(--fg); }
+  .apply-modal-sub { font-size: 0.85rem; color: var(--fm); font-weight: 300; margin-bottom: 1.5rem; }
+  .apply-form-error { display: none; background: rgba(226,75,74,0.08); border: 1px solid #E24B4A; border-radius: 0.5rem; padding: 0.7rem 1rem; color: #F09595; font-size: 0.82rem; margin-top: 1rem; }
+  .apply-form-error.show { display: block; }
 </style>
 {{ end }}
 
@@ -106,12 +118,12 @@
           </div>
         </div>
         <div class="crew-stats">
-          <div class="crew-stat"><div class="crew-stat-val" data-role-id="REPLACE_WITH_SOLOTHURN_ROLE_ID">…</div><div class="crew-stat-lbl">Piloten</div></div>
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1521178068629065948">…</div><div class="crew-stat-lbl">Piloten</div></div>
         </div>
-        <a href="https://discord.gg/pFyZEdx4vQ" class="crew-join-btn discord" target="_blank" rel="noopener">Auf Discord beitreten →</a>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('solothurn')">Dieser Crew beitreten →</button>
       </div>
 
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇨🇭</span>
           <div>
@@ -119,10 +131,13 @@
             <div class="crew-region">Zürich & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534965888040566866">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('zuerich')">Dieser Crew beitreten →</button>
       </div>
 
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇨🇭</span>
           <div>
@@ -130,10 +145,13 @@
             <div class="crew-region">Bern & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534966173915938857">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('bern')">Dieser Crew beitreten →</button>
       </div>
 
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇨🇭</span>
           <div>
@@ -141,10 +159,13 @@
             <div class="crew-region">Basel & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534967524565844120">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('basel')">Dieser Crew beitreten →</button>
       </div>
 
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇨🇭</span>
           <div>
@@ -152,10 +173,13 @@
             <div class="crew-region">Luzern & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534966354380197908">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('luzern')">Dieser Crew beitreten →</button>
       </div>
 
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇨🇭</span>
           <div>
@@ -163,7 +187,10 @@
             <div class="crew-region">St. Gallen & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534966269340811435">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('stgallen')">Dieser Crew beitreten →</button>
       </div>
     </div>
   </div>
@@ -172,7 +199,7 @@
   <div class="country-section">
     <div class="country-label">🇩🇪 Deutschland</div>
     <div class="crews-grid">
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇩🇪</span>
           <div>
@@ -180,9 +207,12 @@
             <div class="crew-region">Freiburg, Stuttgart & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534966611864195253">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('bawue')">Dieser Crew beitreten →</button>
       </div>
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇩🇪</span>
           <div>
@@ -190,7 +220,10 @@
             <div class="crew-region">München, Augsburg & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534966598446874624">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('bayern')">Dieser Crew beitreten →</button>
       </div>
     </div>
   </div>
@@ -199,7 +232,7 @@
   <div class="country-section">
     <div class="country-label">🇦🇹 Österreich</div>
     <div class="crews-grid">
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇦🇹</span>
           <div>
@@ -207,9 +240,12 @@
             <div class="crew-region">Vorarlberg & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534966805284520208">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('vorarlberg')">Dieser Crew beitreten →</button>
       </div>
-      <div class="crew-card crew-coming">
+      <div class="crew-card">
         <div class="crew-header">
           <span class="crew-flag">🇦🇹</span>
           <div>
@@ -217,7 +253,10 @@
             <div class="crew-region">Wien & Umgebung</div>
           </div>
         </div>
-        <span class="crew-coming-badge">Coming Soon</span>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1534966823810764861">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('wien')">Dieser Crew beitreten →</button>
       </div>
     </div>
   </div>
@@ -246,20 +285,52 @@
       <select id="crew-select" class="form-select">
         <option value="">— Neue Region vorschlagen —</option>
         <option value="solothurn">🇨🇭 Solothurn Crew</option>
-        <option value="zuerich">🇨🇭 Zürich Crew (Coming Soon)</option>
-        <option value="bern">🇨🇭 Bern Crew (Coming Soon)</option>
-        <option value="basel">🇨🇭 Basel Crew (Coming Soon)</option>
-        <option value="luzern">🇨🇭 Luzern Crew (Coming Soon)</option>
-        <option value="stgallen">🇨🇭 St. Gallen Crew (Coming Soon)</option>
-        <option value="bawue">🇩🇪 Baden-Württemberg Crew (Coming Soon)</option>
-        <option value="bayern">🇩🇪 Bayern Crew (Coming Soon)</option>
-        <option value="vorarlberg">🇦🇹 Vorarlberg Crew (Coming Soon)</option>
-        <option value="wien">🇦🇹 Wien Crew (Coming Soon)</option>
+        <option value="zuerich">🇨🇭 Zürich Crew</option>
+        <option value="bern">🇨🇭 Bern Crew</option>
+        <option value="basel">🇨🇭 Basel Crew</option>
+        <option value="luzern">🇨🇭 Luzern Crew</option>
+        <option value="stgallen">🇨🇭 St. Gallen Crew</option>
+        <option value="bawue">🇩🇪 Baden-Württemberg Crew</option>
+        <option value="bayern">🇩🇪 Bayern Crew</option>
+        <option value="vorarlberg">🇦🇹 Vorarlberg Crew</option>
+        <option value="wien">🇦🇹 Wien Crew</option>
       </select>
     </div>
     <button class="form-submit" onclick="submitCrewForm()">Eintragen →</button>
     <div class="form-success" id="crew-form-success">
       ✓ Danke! Wir melden uns auf Discord sobald deine Crew startet.
+    </div>
+  </div>
+</div>
+
+<!-- Crew Join Apply Modal -->
+<div class="apply-overlay" id="apply-overlay" onclick="if(event.target===this) closeCrewApplyModal()">
+  <div class="apply-modal">
+    <div class="apply-modal-header">
+      <h2 id="apply-modal-title">Crew beitreten</h2>
+      <button type="button" class="apply-modal-close" onclick="closeCrewApplyModal()" aria-label="Schliessen">✕</button>
+    </div>
+    <p class="apply-modal-sub" id="apply-modal-sub">Kurze Bewerbung, die Crew-Mods schauen sie sich an und bestätigen dich auf Discord.</p>
+
+    <div id="apply-form-fields">
+      <div class="form-group">
+        <label class="form-label" for="apply-crew-select">Crew</label>
+        <select id="apply-crew-select" class="form-select" onchange="onApplyCrewChange()"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="apply-discord-input">Discord-Username *</label>
+        <input type="text" id="apply-discord-input" class="form-input" placeholder="z.B. sven.1337">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="apply-message-input">Kurze Nachricht (optional)</label>
+        <input type="text" id="apply-message-input" class="form-input" placeholder="z.B. Fliege seit 2 Jahren, wohne in Solothurn">
+      </div>
+      <button class="form-submit" id="apply-submit-btn" onclick="submitCrewApply()">Bewerbung senden →</button>
+      <div class="apply-form-error" id="apply-form-error"></div>
+    </div>
+
+    <div class="form-success" id="apply-form-success">
+      ✓ Bewerbung gesendet! Die Crew-Mods melden sich auf Discord sobald sie bestätigt ist.
     </div>
   </div>
 </div>
@@ -289,6 +360,110 @@
       statEls.forEach(function(el) { el.textContent = '–'; });
     });
 })();
+
+// Crew Join Apply Modal
+// Zentrale Liste aller aktiven (beitretbaren) Crews.
+// Neue Crew live? Einfach hier einen Eintrag ergänzen, sonst nichts anpassen.
+var ACTIVE_CREWS = [
+  { id: 'solothurn', name: 'Solothurn Crew', region: 'Solothurn & Umgebung' },
+  { id: 'zuerich', name: 'Zürich Crew', region: 'Zürich & Umgebung' },
+  { id: 'bern', name: 'Bern Crew', region: 'Bern & Umgebung' },
+  { id: 'basel', name: 'Basel Crew', region: 'Basel & Umgebung' },
+  { id: 'luzern', name: 'Luzern Crew', region: 'Luzern & Umgebung' },
+  { id: 'stgallen', name: 'St. Gallen Crew', region: 'St. Gallen & Umgebung' },
+  { id: 'bawue', name: 'Baden-Württemberg Crew', region: 'Freiburg, Stuttgart & Umgebung' },
+  { id: 'bayern', name: 'Bayern Crew', region: 'München, Augsburg & Umgebung' },
+  { id: 'vorarlberg', name: 'Vorarlberg Crew', region: 'Vorarlberg & Umgebung' },
+  { id: 'wien', name: 'Wien Crew', region: 'Wien & Umgebung' }
+];
+
+function populateApplyCrewSelect() {
+  var select = document.getElementById('apply-crew-select');
+  select.innerHTML = '';
+  ACTIVE_CREWS.forEach(function(crew) {
+    var opt = document.createElement('option');
+    opt.value = crew.id;
+    opt.textContent = crew.name;
+    select.appendChild(opt);
+  });
+}
+
+function onApplyCrewChange() {
+  var select = document.getElementById('apply-crew-select');
+  var crew = ACTIVE_CREWS.find(function(c) { return c.id === select.value; });
+  if (!crew) return;
+  document.getElementById('apply-modal-title').textContent = crew.name + ' beitreten';
+  document.getElementById('apply-modal-sub').textContent = 'Kurze Bewerbung für die ' + crew.name + ', die Crew-Mods schauen sie sich an und bestätigen dich auf Discord.';
+}
+
+function openCrewApplyModal(crewId) {
+  populateApplyCrewSelect();
+  document.getElementById('apply-crew-select').value = crewId;
+  onApplyCrewChange();
+  document.getElementById('apply-discord-input').value = '';
+  document.getElementById('apply-message-input').value = '';
+  document.getElementById('apply-form-error').classList.remove('show');
+  document.getElementById('apply-form-fields').style.display = 'block';
+  document.getElementById('apply-form-success').classList.remove('show');
+  var btn = document.getElementById('apply-submit-btn');
+  btn.disabled = false;
+  btn.textContent = 'Bewerbung senden →';
+  document.getElementById('apply-overlay').classList.add('show');
+}
+
+function closeCrewApplyModal() {
+  document.getElementById('apply-overlay').classList.remove('show');
+}
+
+function submitCrewApply() {
+  var discord = document.getElementById('apply-discord-input').value.trim();
+  var message = document.getElementById('apply-message-input').value.trim();
+  var errorEl = document.getElementById('apply-form-error');
+  errorEl.classList.remove('show');
+
+  if (!discord) {
+    errorEl.textContent = 'Bitte deinen Discord-Username angeben.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  var crewId = document.getElementById('apply-crew-select').value;
+  var crewInfo = ACTIVE_CREWS.find(function(c) { return c.id === crewId; });
+
+  var btn = document.getElementById('apply-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet...';
+
+  fetch('https://fpvhub-bot-production.up.railway.app/api/crews/apply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: discord,
+      region: crewInfo ? crewInfo.region : '',
+      crew: crewId,
+      discordUsername: discord,
+      message: message
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) {
+      document.getElementById('apply-form-fields').style.display = 'none';
+      document.getElementById('apply-form-success').classList.add('show');
+    } else {
+      errorEl.textContent = data.error || 'Unbekannter Fehler. Bitte versuch es später nochmal.';
+      errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Bewerbung senden →';
+    }
+  })
+  .catch(function() {
+    errorEl.textContent = 'Verbindungsfehler. Bitte versuch es später nochmal.';
+    errorEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Bewerbung senden →';
+  });
+}
 
 // Simple Leaflet map
 (function() {
@@ -321,17 +496,17 @@
 
     // Schweiz
     marker(47.207, 7.538, '🇨🇭 Solothurn Crew', true);
-    marker(47.376, 8.541, '🇨🇭 Zürich Crew', false);
-    marker(46.947, 7.445, '🇨🇭 Bern Crew', false);
-    marker(47.558, 7.588, '🇨🇭 Basel Crew', false);
-    marker(47.050, 8.309, '🇨🇭 Luzern Crew', false);
-    marker(47.422, 9.376, '🇨🇭 St. Gallen Crew', false);
+    marker(47.376, 8.541, '🇨🇭 Zürich Crew', true);
+    marker(46.947, 7.445, '🇨🇭 Bern Crew', true);
+    marker(47.558, 7.588, '🇨🇭 Basel Crew', true);
+    marker(47.050, 8.309, '🇨🇭 Luzern Crew', true);
+    marker(47.422, 9.376, '🇨🇭 St. Gallen Crew', true);
     // Deutschland
-    marker(48.775, 9.182, '🇩🇪 Baden-Württemberg Crew', false);
-    marker(48.137, 11.575, '🇩🇪 Bayern Crew', false);
+    marker(48.775, 9.182, '🇩🇪 Baden-Württemberg Crew', true);
+    marker(48.137, 11.575, '🇩🇪 Bayern Crew', true);
     // Österreich
-    marker(47.503, 9.747, '🇦🇹 Vorarlberg Crew', false);
-    marker(48.208, 16.373, '🇦🇹 Wien Crew', false);
+    marker(47.503, 9.747, '🇦🇹 Vorarlberg Crew', true);
+    marker(48.208, 16.373, '🇦🇹 Wien Crew', true);
   };
   document.head.appendChild(script);
 })();
