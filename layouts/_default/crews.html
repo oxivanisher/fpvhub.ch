@@ -198,6 +198,19 @@
         </div>
         <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('stgallen')">Dieser Crew beitreten →</button>
       </div>
+      <div class="crew-card">
+        <div class="crew-header">
+          <span class="crew-flag">🇨🇭</span>
+          <div>
+            <div class="crew-name">Aargau Crew</div>
+            <div class="crew-region">Aargau & Umgebung</div>
+          </div>
+        </div>
+        <div class="crew-stats">
+          <div class="crew-stat"><div class="crew-stat-val" data-role-id="1537123085734379590">…</div><div class="crew-stat-lbl">Piloten</div></div>
+        </div>
+        <button type="button" class="crew-join-btn discord" onclick="openCrewApplyModal('aargau')">Dieser Crew beitreten →</button>
+      </div>
     </div>
   </div>
 
@@ -373,6 +386,7 @@ var ACTIVE_CREWS = [
   { id: 'basel', name: 'Basel Crew', region: 'Basel & Umgebung' },
   { id: 'luzern', name: 'Luzern Crew', region: 'Luzern & Umgebung' },
   { id: 'stgallen', name: 'St. Gallen Crew', region: 'St. Gallen & Umgebung' },
+  { id: 'aargau', name: 'Aargau Crew', region: 'Aargau & Umgebung' },
   { id: 'bawue', name: 'Baden-Württemberg Crew', region: 'Freiburg, Stuttgart & Umgebung' },
   { id: 'bayern', name: 'Bayern Crew', region: 'München, Augsburg & Umgebung' },
   { id: 'vorarlberg', name: 'Vorarlberg Crew', region: 'Vorarlberg & Umgebung' },
@@ -587,6 +601,7 @@ function submitCrewApply() {
     marker(47.558, 7.588, '🇨🇭 Basel Crew', true);
     marker(47.050, 8.309, '🇨🇭 Luzern Crew', true);
     marker(47.422, 9.376, '🇨🇭 St. Gallen Crew', true);
+    marker(47.391, 8.045, '🇨🇭 Aargau Crew', true);
     // Deutschland
     marker(48.775, 9.182, '🇩🇪 Baden-Württemberg Crew', true);
     marker(48.137, 11.575, '🇩🇪 Bayern Crew', true);
